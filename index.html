@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Resume</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #2563eb; /* Modern Blue */
+            --text-color: #1f2937;
+            --bg-color: #f9fafb;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Header Section */
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 25px;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        header h2 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: #4b5563;
+            margin-bottom: 15px;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 0.95rem;
+        }
+
+        .contact-info a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .contact-info a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Section Styles */
+        section {
+            margin-bottom: 35px;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Experience & Education Items */
+        .item {
+            margin-bottom: 20px;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 5px;
+        }
+
+        .item-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .item-company {
+            font-style: italic;
+            color: #4b5563;
+        }
+
+        .item-date {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .item ul {
+            margin-left: 20px;
+            margin-top: 5px;
+        }
+
+        .item li {
+            margin-bottom: 4px;
+        }
+
+        /* Skills Grid */
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .skill-badge {
+            background-color: #eff6ff;
+            color: var(--primary-color);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid #bfdbfe;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            .item-header {
+                flex-direction: column;
+            }
+            .item-date {
+                margin-top: 2px;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header -->
+    <header>
+        <h1>Your Name</h1>
+        <h2>Your Professional Title / Role</h2>
+        <div class="contact-info">
+            <a href="mailto:your.email@email.com">📧 your.email@email.com</a>
+            <a href="tel:+1234567890">📞 +123 456 7890</a>
+            <span>📍 City, State, Country</span>
+            <a href="https://linkedin.com/in/yourprofile" target="_blank">🔗 LinkedIn</a>
+        </div>
+    </header>
+
+    <!-- Professional Summary -->
+    <section>
+        <h3>Summary</h3>
+        <p>
+            A highly motivated and detail-oriented professional with a strong background in [Your Field]. Proven track record of managing projects effectively, implementing strategic solutions, and collaborating across teams to achieve key organizational milestones. 
+        </p>
+    </section>
+
+    <!-- Professional Experience -->
+    <section>
+        <h3>Experience</h3>
+        
+        <div class="item">
+            <div class="item-header">
+                <div>
+                    <span class="item-title">Lead Role / Job Title</span> – 
+                    <span class="item-company">Company/Organization Name</span>
+                </div>
+                <span class="item-date">Month Year – Present</span>
+            </div>
+            <ul>
+                <li>Led a team or spearheaded a core initiative that resulted in a measurable improvement (e.g., increased efficiency by 15%).</li>
+                <li>Developed and executed comprehensive strategies to streamline day-to-day operations.</li>
+                <li>Collaborated closely with stakeholders to ensure project alignment and successful delivery.</li>
+            </ul>
+        </div>
+
+        <div class="item">
+            <div class="item-header">
+                <div>
+                    <span class="item-title">Previous Job Title</span> – 
+                    <span class="item-company">Previous Company Name</span>
+                </div>
+                <span class="item-date">Month Year – Month Year</span>
+            </div>
+            <ul>
+                <li>Managed core responsibilities, delivering high-quality results ahead of key deadlines.</li>
+                <li>Resolved complex issues creatively by utilizing technical knowledge and cross-functional leadership.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Education -->
+    <section>
+        <h3>Education</h3>
+        
+        <div class="item">
+            <div class="item-header">
+                <div>
+                    <span class="item-title">Degree / Diploma Name</span> – 
+                    <span class="item-company">University or Institution Name</span>
+                </div>
+                <span class="item-date">Graduation Year</span>
+            </div>
+            <p style="color: #4b5563; font-size: 0.95rem;">Specialization, Major, or Key Achievements</p>
+        </div>
+    </section>
+
+    <!-- Skills -->
+    <section>
+        <h3>Skills & Expertise</h3>
+        <div class="skills-container">
+            <span class="skill-badge">Strategic Leadership</span>
+            <span class="skill-badge">Project Management</span>
+            <span class="skill-badge">Technical Troubleshooting</span>
+            <span class="skill-badge">Data Analysis</span>
+            <span class="skill-badge">Communication</span>
+            <span class="skill-badge">Team Collaboration</span>
+            <span class="skill-badge">Problem Solving</span>
+        </div>
+    </section>
+
+    <!-- Certifications / Licenses (Optional) -->
+    <section>
+        <h3>Certifications & Licenses</h3>
+        <div class="item">
+            <div class="item-header">
+                <span class="item-title" style="font-size: 1rem;">Professional License / Certification Title</span>
+                <span class="item-date">Issued Year</span>
+            </div>
+            <p style="color: #4b5563; font-size: 0.95rem;">Issuing Organization Name</p>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>
