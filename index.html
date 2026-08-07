@@ -3,265 +3,1061 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Resume</title>
+    <title>Roleplay AI - Story World</title>
     <style>
-        /* Global Styles */
         :root {
-            --primary-color: #2563eb; /* Modern Blue */
-            --text-color: #1f2937;
-            --bg-color: #f9fafb;
-            --card-bg: #ffffff;
-            --border-color: #e5e7eb;
+            --bg: #090d16;
+            --card-bg: #131b2e;
+            --sidebar-bg: #0d1322;
+            --accent-purple: #9333ea;
+            --accent-pink: #db2777;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --border: #1e293b;
+            --user-msg: #581c87;
+            --ai-msg: #1e293b;
         }
 
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        /* Header Section */
-        header {
-            text-align: center;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 25px;
-            margin-bottom: 30px;
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            color: var(--primary-color);
-            margin-bottom: 5px;
-        }
-
-        header h2 {
-            font-size: 1.25rem;
-            font-weight: 500;
-            color: #4b5563;
-            margin-bottom: 15px;
-        }
-
-        .contact-info {
+            background-color: var(--bg);
+            color: var(--text-main);
             display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            font-size: 0.95rem;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        .contact-info a {
-            color: var(--text-color);
-            text-decoration: none;
-            transition: color 0.2s;
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 380px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
         }
 
-        .contact-info a:hover {
-            color: var(--primary-color);
-        }
-
-        /* Section Styles */
-        section {
-            margin-bottom: 35px;
-        }
-
-        h3 {
-            font-size: 1.4rem;
-            color: var(--primary-color);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 5px;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Experience & Education Items */
-        .item {
-            margin-bottom: 20px;
-        }
-
-        .item-header {
+        .brand-header {
+            padding: 16px 20px;
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.25), rgba(219, 39, 119, 0.25));
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            margin-bottom: 5px;
+            align-items: center;
         }
 
-        .item-title {
-            font-weight: bold;
-            font-size: 1.1rem;
+        .brand-header h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #c084fc, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .item-company {
-            font-style: italic;
-            color: #4b5563;
+        .free-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border: 1px solid rgba(16, 185, 129, 0.4);
         }
 
-        .item-date {
-            color: #6b7280;
-            font-size: 0.9rem;
-        }
-
-        .item ul {
-            margin-left: 20px;
-            margin-top: 5px;
-        }
-
-        .item li {
-            margin-bottom: 4px;
-        }
-
-        /* Skills Grid */
-        .skills-container {
+        .filters {
             display: flex;
-            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px;
+            overflow-x: auto;
+            border-bottom: 1px solid var(--border);
+            scrollbar-width: none;
+        }
+
+        .filters::-webkit-scrollbar { display: none; }
+
+        .filter-btn {
+            background: #1e293b;
+            color: var(--text-sub);
+            border: none;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+        }
+
+        .story-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .story-card {
+            display: flex;
+            gap: 12px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 10px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+            position: relative;
+            align-items: center;
+        }
+
+        .story-card:hover, .story-card.active {
+            border-color: var(--accent-purple);
+            transform: translateY(-2px);
+            background: #182238;
+        }
+
+        .poster-canvas {
+            width: 80px;
+            height: 110px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            object-fit: cover;
+        }
+
+        .story-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .story-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .story-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: var(--text-sub);
+        }
+
+        .popular-badge {
+            background: #f59e0b;
+            color: black;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .saved-badge {
+            background: #10b981;
+            color: black;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .admin-trigger {
+            padding: 12px;
+            background: var(--sidebar-bg);
+            border-top: 1px solid var(--border);
+            color: var(--text-sub);
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .admin-trigger:hover { color: #c084fc; }
+
+        /* Main Workspace */
+        .main-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg);
+            position: relative;
+        }
+
+        .chat-header {
+            padding: 12px 20px;
+            background: var(--sidebar-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-avatar-canvas {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-purple);
+            object-fit: cover;
+        }
+
+        .header-text h3 { font-size: 1.1rem; }
+        .header-text p { font-size: 0.8rem; color: var(--text-sub); }
+
+        .action-btn-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .settings-btn {
+            background: #1e293b;
+            border: 1px solid var(--border);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .settings-btn:hover { background: var(--accent-purple); }
+
+        .save-btn {
+            background: #10b981;
+            color: black;
+            font-weight: bold;
+            border: none;
+        }
+
+        .save-btn:hover { background: #059669; color: white; }
+
+        /* Chat Workspace */
+        .chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 14px 18px;
+            border-radius: 16px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+        }
+
+        .message.ai {
+            background-color: var(--ai-msg);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border: 1px solid var(--border);
+            color: #e2e8f0;
+        }
+
+        .message.user {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            color: white;
+        }
+
+        .input-bar {
+            padding: 16px 20px;
+            background: var(--sidebar-bg);
+            border-top: 1px solid var(--border);
+            display: flex;
             gap: 10px;
         }
 
-        .skill-badge {
-            background-color: #eff6ff;
-            color: var(--primary-color);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            border: 1px solid #bfdbfe;
+        .input-bar input {
+            flex: 1;
+            padding: 12px 18px;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text-main);
+            outline: none;
+            font-size: 0.95rem;
         }
 
-        /* Responsive Design */
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-            .container {
-                padding: 20px;
-            }
-            .item-header {
-                flex-direction: column;
-            }
-            .item-date {
-                margin-top: 2px;
-                margin-bottom: 5px;
-            }
+        .input-bar input:focus { border-color: var(--accent-purple); }
+
+        .input-bar button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            border: none;
+            border-radius: 24px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 16px;
+            width: 550px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            background: var(--bg);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        .checkbox-item input { accent-color: var(--accent-purple); }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-sub);
+        }
+
+        .slider-group input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent-purple);
+        }
+
+        .modal-content select, .modal-content input[type="text"], .modal-content textarea {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text-main);
+            width: 100%;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-sec {
+            background: transparent;
+            color: var(--text-sub);
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+        }
+
+        .btn-pri {
+            padding: 8px 18px;
+            background: var(--accent-purple);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn-danger {
+            padding: 8px 18px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Admin Table View */
+        .admin-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: var(--bg);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: #10b981;
+            color: black;
+            font-weight: bold;
+            padding: 12px 20px;
+            border-radius: 8px;
+            display: none;
+            z-index: 200;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <!-- Header -->
-    <header>
-        <h1>Your Name</h1>
-        <h2>Your Professional Title / Role</h2>
-        <div class="contact-info">
-            <a href="mailto:your.email@email.com">📧 your.email@email.com</a>
-            <a href="tel:+1234567890">📞 +123 456 7890</a>
-            <span>📍 City, State, Country</span>
-            <a href="https://linkedin.com/in/yourprofile" target="_blank">🔗 LinkedIn</a>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="brand-header">
+            <h1>Roleplay AI</h1>
+            <span class="free-badge">100% FREE</span>
         </div>
-    </header>
 
-    <!-- Professional Summary -->
-    <section>
-        <h3>Summary</h3>
-        <p>
-            A highly motivated and detail-oriented professional with a strong background in [Your Field]. Proven track record of managing projects effectively, implementing strategic solutions, and collaborating across teams to achieve key organizational milestones. 
-        </p>
-    </section>
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterCategory('All')">All</button>
+            <button class="filter-btn" onclick="filterCategory('Saved')">💾 Saved</button>
+            <button class="filter-btn" onclick="filterCategory('Campus')">Campus & Drama</button>
+            <button class="filter-btn" onclick="filterCategory('Horror')">Horror & Mystery</button>
+            <button class="filter-btn" onclick="filterCategory('Sci-Fi')">Sci-Fi & Fantasy</button>
+            <button class="filter-btn" onclick="filterCategory('Romance')">Romance</button>
+            <button class="filter-btn" onclick="filterCategory('Action')">Action & Crime</button>
+        </div>
 
-    <!-- Professional Experience -->
-    <section>
-        <h3>Experience</h3>
-        
-        <div class="item">
-            <div class="item-header">
-                <div>
-                    <span class="item-title">Lead Role / Job Title</span> – 
-                    <span class="item-company">Company/Organization Name</span>
+        <div class="story-list" id="storyList"></div>
+
+        <button class="admin-trigger" onclick="openAdminLogin()">⚙ Admin Portal</button>
+    </div>
+
+    <!-- Main Dynamic Chat Area -->
+    <div class="main-chat">
+        <div class="chat-header">
+            <div class="header-profile">
+                <canvas id="activeAvatarCanvas" class="header-avatar-canvas" width="100" height="100"></canvas>
+                <div class="header-text">
+                    <h3 id="currentStoryTitle">Select a Story</h3>
+                    <p id="currentStoryGenre">Interactive AI Roleplay Hub</p>
                 </div>
-                <span class="item-date">Month Year – Present</span>
             </div>
-            <ul>
-                <li>Led a team or spearheaded a core initiative that resulted in a measurable improvement (e.g., increased efficiency by 15%).</li>
-                <li>Developed and executed comprehensive strategies to streamline day-to-day operations.</li>
-                <li>Collaborated closely with stakeholders to ensure project alignment and successful delivery.</li>
-            </ul>
+            <div class="action-btn-group">
+                <button class="settings-btn save-btn" id="saveStoryBtn" onclick="saveCurrentStoryLocally()" style="display:none;">
+                    💾 Save Progress
+                </button>
+                <button class="settings-btn" id="configBtn" onclick="openPersonalityModal()" style="display:none;">
+                    ⚙ Persona Settings
+                </button>
+            </div>
         </div>
 
-        <div class="item">
-            <div class="item-header">
-                <div>
-                    <span class="item-title">Previous Job Title</span> – 
-                    <span class="item-company">Previous Company Name</span>
+        <div class="chat-box" id="chatBox">
+            <div class="message ai">Welcome to Roleplay AI! Select any story topic to begin chatting directly.</div>
+        </div>
+
+        <div class="input-bar">
+            <input type="text" id="userInput" placeholder="Type your roleplay response..." disabled>
+            <button id="sendBtn" onclick="sendMessage()" disabled>Send</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toastMsg">Progress Saved Locally!</div>
+
+    <!-- Personality Config Modal -->
+    <div class="modal" id="personalityModal">
+        <div class="modal-content">
+            <h3>⚙ Character & Persona Settings</h3>
+            
+            <h4 style="color: var(--accent-pink); font-size: 0.9rem;">1. Personality Traits</h4>
+            <div class="checkbox-group">
+                <label class="checkbox-item"><input type="checkbox" value="Normal" id="traitNormal" checked> Normal</label>
+                <label class="checkbox-item"><input type="checkbox" value="Very Funny" id="traitVeryFunny"> Very Funny</label>
+                <label class="checkbox-item"><input type="checkbox" value="Witty" id="traitWitty"> Witty</label>
+                <label class="checkbox-item"><input type="checkbox" value="Serious" id="traitSerious"> Serious</label>
+                <label class="checkbox-item"><input type="checkbox" value="Not Funny" id="traitNotFunny"> Not Funny</label>
+                <label class="checkbox-item"><input type="checkbox" value="Sarcastic" id="traitSarcastic"> Sarcastic</label>
+                <label class="checkbox-item"><input type="checkbox" value="Introvert" id="traitIntrovert"> Introvert</label>
+                <label class="checkbox-item"><input type="checkbox" value="Extrovert" id="traitExtrovert" checked> Extrovert</label>
+                <label class="checkbox-item"><input type="checkbox" value="Rude" id="traitRude" checked> Rude / Tsundere</label>
+                <label class="checkbox-item"><input type="checkbox" value="Polite" id="traitPolite"> Polite & Kind</label>
+            </div>
+
+            <h4 style="color: var(--accent-pink); font-size: 0.9rem;">2. Emotion & Ability Levels</h4>
+            <div class="slider-group">
+                <div class="slider-label"><span>Emotional Level (0-10)</span><b id="valEmotion">5</b></div>
+                <input type="range" id="levelEmotion" min="0" max="10" value="5" oninput="document.getElementById('valEmotion').innerText = this.value">
+            </div>
+
+            <div class="slider-group">
+                <div class="slider-label"><span>Anger Level (0-10)</span><b id="valAnger">3</b></div>
+                <input type="range" id="levelAnger" min="0" max="10" value="3" oninput="document.getElementById('valAnger').innerText = this.value">
+            </div>
+
+            <div class="slider-group">
+                <div class="slider-label"><span>IQ Level (67 - 112)</span><b id="valIQ">100</b></div>
+                <input type="range" id="levelIQ" min="67" max="112" value="100" oninput="document.getElementById('valIQ').innerText = this.value">
+            </div>
+
+            <h4 style="color: var(--accent-pink); font-size: 0.9rem;">3. Financial Class Settings</h4>
+            <div class="slider-group">
+                <div class="slider-label"><span>Character's Money Class</span></div>
+                <select id="charMoneyClass">
+                    <option value="Poor Class">Poor Class</option>
+                    <option value="Middle Class" selected>Middle Class</option>
+                    <option value="Rich Class">Rich Class / Billionaire</option>
+                </select>
+            </div>
+
+            <div class="slider-group">
+                <div class="slider-label"><span>Your Persona's Money Class</span></div>
+                <select id="userMoneyClass">
+                    <option value="Poor Class">Poor Class</option>
+                    <option value="Middle Class" selected>Middle Class</option>
+                    <option value="Rich Class">Rich Class / Billionaire</option>
+                </select>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-sec" onclick="closeModal('personalityModal')">Cancel</button>
+                <button class="btn-pri" onclick="savePersonality()">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content" style="width: 380px;">
+            <h3>Admin Portal Login</h3>
+            <input type="text" id="adminUser" placeholder="Username">
+            <input type="password" id="adminPass" placeholder="Password">
+            <div class="modal-actions">
+                <button class="btn-sec" onclick="closeModal('loginModal')">Cancel</button>
+                <button class="btn-pri" onclick="handleLogin()">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Modal (Edit / Delete / Publish) -->
+    <div class="modal" id="adminDashboardModal">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3>⚙ Admin Story Management</h3>
+                <button class="btn-pri" onclick="openPublishForm()">+ Publish New Story</button>
+            </div>
+
+            <div id="adminStoryList" style="display:flex; flex-direction:column; gap:10px; max-height:400px; overflow-y:auto; margin-top:10px;"></div>
+
+            <div class="modal-actions">
+                <button class="btn-sec" onclick="closeModal('adminDashboardModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Story Editor/Publish Modal -->
+    <div class="modal" id="adminEditModal">
+        <div class="modal-content">
+            <h3 id="editModalTitle">Publish New Story</h3>
+            <input type="hidden" id="editStoryId">
+            
+            <label style="font-size:0.8rem; color:var(--text-sub);">Story Name / Title:</label>
+            <input type="text" id="editTitle" placeholder="Story Title">
+
+            <label style="font-size:0.8rem; color:var(--text-sub);">Tagline / Subtitle:</label>
+            <input type="text" id="editTagline" placeholder="e.g. Where Love Meets Dreams">
+
+            <label style="font-size:0.8rem; color:var(--text-sub);">Category:</label>
+            <select id="editCategory">
+                <option value="Campus">Campus & Drama</option>
+                <option value="Horror">Horror & Mystery</option>
+                <option value="Sci-Fi">Sci-Fi & Fantasy</option>
+                <option value="Romance">Romance</option>
+                <option value="Action">Action & Crime</option>
+            </select>
+
+            <div style="display:flex; gap:10px;">
+                <div style="flex:1;">
+                    <label style="font-size:0.8rem; color:var(--text-sub);">Thumbnail Color 1:</label>
+                    <input type="color" id="editColor1" value="#9333ea" style="height:40px;">
                 </div>
-                <span class="item-date">Month Year – Month Year</span>
-            </div>
-            <ul>
-                <li>Managed core responsibilities, delivering high-quality results ahead of key deadlines.</li>
-                <li>Resolved complex issues creatively by utilizing technical knowledge and cross-functional leadership.</li>
-            </ul>
-        </div>
-    </section>
-
-    <!-- Education -->
-    <section>
-        <h3>Education</h3>
-        
-        <div class="item">
-            <div class="item-header">
-                <div>
-                    <span class="item-title">Degree / Diploma Name</span> – 
-                    <span class="item-company">University or Institution Name</span>
+                <div style="flex:1;">
+                    <label style="font-size:0.8rem; color:var(--text-sub);">Thumbnail Color 2:</label>
+                    <input type="color" id="editColor2" value="#db2777" style="height:40px;">
                 </div>
-                <span class="item-date">Graduation Year</span>
             </div>
-            <p style="color: #4b5563; font-size: 0.95rem;">Specialization, Major, or Key Achievements</p>
-        </div>
-    </section>
 
-    <!-- Skills -->
-    <section>
-        <h3>Skills & Expertise</h3>
-        <div class="skills-container">
-            <span class="skill-badge">Strategic Leadership</span>
-            <span class="skill-badge">Project Management</span>
-            <span class="skill-badge">Technical Troubleshooting</span>
-            <span class="skill-badge">Data Analysis</span>
-            <span class="skill-badge">Communication</span>
-            <span class="skill-badge">Team Collaboration</span>
-            <span class="skill-badge">Problem Solving</span>
-        </div>
-    </section>
+            <label style="font-size:0.8rem; color:var(--text-sub);">Initial Scene Prompt (Description):</label>
+            <textarea id="editIntro" rows="4" placeholder="Enter starting scene prompt..."></textarea>
 
-    <!-- Certifications / Licenses (Optional) -->
-    <section>
-        <h3>Certifications & Licenses</h3>
-        <div class="item">
-            <div class="item-header">
-                <span class="item-title" style="font-size: 1rem;">Professional License / Certification Title</span>
-                <span class="item-date">Issued Year</span>
+            <div class="modal-actions">
+                <button class="btn-sec" onclick="closeModal('adminEditModal')">Cancel</button>
+                <button class="btn-pri" onclick="saveStoryFromAdmin()">Publish / Save Story</button>
             </div>
-            <p style="color: #4b5563; font-size: 0.95rem;">Issuing Organization Name</p>
         </div>
-    </section>
-</div>
+    </div>
 
+    <script>
+        const initialDataset = [
+            { id: '1', title: 'Campus Ke Dil Ki Dhadkan', category: 'Campus', popular: true, tagline: 'Where Love Meets Dreams', bgGrad: ['#ec4899', '#8b5cf6'], intro: '*Library mein tumhare aage Aisha khadi hai aur tum se galti se takra gaye ho, jis wajah se uski mehangi kitabein neeche gir gayi.*\n\nAisha: "Dikhta nahi hai kya? Gawaar kahin ke! Excuse me? Tumne meri books girayi aur ab mujhe hi dekh rahe ho?"' },
+            { id: '2', title: 'Priya: Bad Husband', category: 'Campus', popular: false, tagline: 'A Broken Marriage', bgGrad: ['#ef4444', '#7c3aed'], intro: '*Priya quietly sits in the room waiting for you to return.*\n\nPriya: "It is 2 AM. Do you even care about us anymore?"' },
+            { id: '3', title: 'Nikki: Anime Cutie', category: 'Campus', popular: false, tagline: 'Kawaii Campus Love', bgGrad: ['#f472b6', '#38bdf8'], intro: '*Nikki runs carrying anime magazines and drops them at your feet.*\n\nNikki: "Gomen ne! I was in such a rush!"' },
+            { id: '4', title: 'Haley: Queen Bee', category: 'Campus', popular: false, tagline: 'High School Royalty', bgGrad: ['#f59e0b', '#ec4899'], intro: '*Haley lowers her sunglasses in the campus hallway.*\n\nHaley: "You think you can sit at our table?"' },
+            { id: '5', title: 'Niharika: Rising Star', category: 'Campus', popular: false, tagline: 'Music & Romance', bgGrad: ['#a855f7', '#06b6d4'], intro: '*Niharika is singing backstage when you walk in.*\n\nNiharika: "Oh! I didn\'t hear you come in..."' },
+            { id: '6', title: 'Neel: Gamer', category: 'Campus', popular: false, tagline: 'E-Sports Destiny', bgGrad: ['#3b82f6', '#10b981'], intro: '*Neel adjusts his RGB headset frantically typing.*\n\nNeel: "Bro, jump on Discord now!"' },
+            { id: '7', title: 'Suhana: Tu Chiz Badi Hai Mast Mast', category: 'Campus', popular: false, tagline: 'Dance Studio Beats', bgGrad: ['#f43f5e', '#fb923c'], intro: '*Suhana strikes a dramatic pose at dance practice.*\n\nSuhana: "Like what you see?"' },
+            { id: '8', title: 'Aryan: Silent Crush', category: 'Campus', popular: false, tagline: 'Quiet Heartbeats', bgGrad: ['#6366f1', '#a855f7'], intro: '*Aryan turns pages slowly as you sit beside him.*\n\nAryan: "*Blushes slightly* Uh... hi."' },
+            { id: '9', title: 'College Life: Pehla Pyaar', category: 'Campus', popular: false, tagline: 'First Rain Memories', bgGrad: ['#0ea5e9', '#6366f1'], intro: '*Rain pours on campus as someone shares an umbrella with you.*' },
+            { id: '10', title: 'Khooni Ghadi Ka Raaz', category: 'Horror', popular: true, tagline: 'Midnight Mystery', bgGrad: ['#1e1b4b', '#451a03'], intro: '*The grandfather clock ticks backward at 3:00 AM...*' },
+            { id: '11', title: 'X Ray Vision: Deewaron Ke Paar', category: 'Horror', popular: false, tagline: 'Supernatural Sight', bgGrad: ['#0284c7', '#0f172a'], intro: '*You put on the glasses and see hollow rooms inside walls...*' },
+            { id: '12', title: 'Raat Ka Sannata: Khabar Se Pare', category: 'Horror', popular: false, tagline: 'Emergency Broadcast', bgGrad: ['#b91c1c', '#111827'], intro: '*A loud alert wakes you up at midnight...*' },
+            { id: '13', title: 'Bhootia Haveli: Aakhri Tamanna', category: 'Horror', popular: false, tagline: 'Haunted Estate', bgGrad: ['#312e81', '#064e3b'], intro: '*The gates creak open by themselves...*' },
+            { id: '14', title: 'Murder Mystery: Shatranj Ka Khel', category: 'Horror', popular: false, tagline: 'Grandmaster Case', bgGrad: ['#475569', '#0f172a'], intro: '*Detective, the victim clutched a black chess king...*' },
+            { id: '15', title: 'Rishab: Insaaniyat Gaayab?', category: 'Sci-Fi', popular: false, tagline: 'Last Survivors', bgGrad: ['#2563eb', '#1e1b4b'], intro: '*Rishab checks the locator scan.*\n\nRishab: "The human count is zero..."' },
+            { id: '16', title: 'Time Travel: Ateet Ki Khoj', category: 'Sci-Fi', popular: false, tagline: 'Temporal Gateway', bgGrad: ['#d97706', '#431407'], intro: '*You step out of the portal into London 1824...*' },
+            { id: '17', title: 'Marriage Life: Rishton Ki Uljhan', category: 'Romance', popular: false, tagline: 'Arranged Bonds', bgGrad: ['#be123c', '#831843'], intro: '*Both families wait silently for your decision...*' },
+            { id: '18', title: 'CEO & Assistant: Office Contract', category: 'Romance', popular: false, tagline: 'Corporate Romance', bgGrad: ['#4338ca', '#312e81'], intro: '*The CEO pushes the paper across the table...*' },
+            { id: '19', title: 'Undercover Agent: Mission Alpha', category: 'Action', popular: false, tagline: 'Tactical Operation', bgGrad: ['#15803d', '#14532d'], intro: '*Agent, the target has entered the building...*' },
+            { id: '20', title: 'Mafia Boss: Duniya Ka Don', category: 'Action', popular: false, tagline: 'Underworld Empire', bgGrad: ['#7f1d1d', '#18181b'], intro: '*The luxury car stops.*\n\nBoss: "Ready to work for me?"' }
+        ];
+
+        // Persistent Local Database for Stories
+        let stories = JSON.parse(localStorage.getItem('roleplay_admin_stories')) || initialDataset;
+        let activeCategory = 'All';
+        let activeStory = null;
+        let chatHistories = {};
+
+        let characterTraits = {
+            emotion: 5,
+            anger: 3,
+            iq: 100,
+            selectedTraits: ['Normal', 'Extrovert', 'Rude'],
+            charClass: 'Middle Class',
+            userClass: 'Middle Class'
+        };
+
+        function renderStoryPosterToDataUrl(title, tagline, colors) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 160;
+            canvas.height = 220;
+            const ctx = canvas.getContext('2d');
+
+            const grad = ctx.createLinearGradient(0, 0, 160, 220);
+            grad.addColorStop(0, colors[0] || '#9333ea');
+            grad.addColorStop(1, colors[1] || '#db2777');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 160, 220);
+
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+            ctx.beginPath();
+            ctx.arc(80, 100, 45, 0, Math.PI * 2);
+            ctx.fill();
+
+            const overlay = ctx.createLinearGradient(0, 0, 0, 220);
+            overlay.addColorStop(0, 'rgba(0,0,0,0.1)');
+            overlay.addColorStop(0.6, 'rgba(0,0,0,0.4)');
+            overlay.addColorStop(1, 'rgba(0,0,0,0.9)');
+            ctx.fillStyle = overlay;
+            ctx.fillRect(0, 0, 160, 220);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 13px sans-serif';
+            ctx.textAlign = 'center';
+            
+            const words = title.split(' ');
+            let line1 = words.slice(0, Math.ceil(words.length / 2)).join(' ');
+            let line2 = words.slice(Math.ceil(words.length / 2)).join(' ');
+            ctx.fillText(line1, 80, 175);
+            if (line2) ctx.fillText(line2, 80, 190);
+
+            ctx.fillStyle = '#f472b6';
+            ctx.font = 'italic 8px sans-serif';
+            ctx.fillText((tagline || '').toUpperCase(), 80, 205);
+
+            return canvas.toDataURL();
+        }
+
+        window.onload = () => {
+            loadSavedStoriesFromStorage();
+            renderStories();
+        };
+
+        function filterCategory(cat) {
+            activeCategory = cat;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText.includes(cat) || (cat === 'All' && btn.innerText === 'All'));
+            });
+            renderStories();
+        }
+
+        function isStorySaved(id) {
+            const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
+            return !!savedData[id];
+        }
+
+        function renderStories() {
+            const list = document.getElementById('storyList');
+            list.innerHTML = '';
+
+            let filtered = stories;
+            if (activeCategory === 'Saved') {
+                const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
+                filtered = stories.filter(s => !!savedData[s.id]);
+            } else if (activeCategory !== 'All') {
+                filtered = stories.filter(s => s.category === activeCategory);
+            }
+
+            if (filtered.length === 0 && activeCategory === 'Saved') {
+                list.innerHTML = '<div style="padding:20px; color:var(--text-sub); text-align:center;">No saved stories yet!</div>';
+                return;
+            }
+
+            filtered.forEach(story => {
+                const posterDataUrl = renderStoryPosterToDataUrl(story.title, story.tagline, story.bgGrad);
+                const saved = isStorySaved(story.id);
+
+                const card = document.createElement('div');
+                card.className = `story-card ${activeStory && activeStory.id === story.id ? 'active' : ''}`;
+                card.onclick = () => selectStory(story.id);
+
+                card.innerHTML = `
+                    <img src="${posterDataUrl}" class="poster-canvas" alt="Poster">
+                    <div class="story-info">
+                        <div class="story-title">${story.title}</div>
+                        <div class="story-meta">
+                            <span>${story.category}</span>
+                            ${story.popular ? '<span class="popular-badge">POPULAR</span>' : ''}
+                            ${saved ? '<span class="saved-badge">SAVED</span>' : ''}
+                        </div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function selectStory(id) {
+            activeStory = stories.find(s => s.id === id);
+            if (!activeStory) return;
+
+            const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
+            if (savedData[id]) {
+                chatHistories[id] = savedData[id].history;
+                characterTraits = savedData[id].traits;
+            }
+
+            renderStories();
+
+            const avatarUrl = renderStoryPosterToDataUrl(activeStory.title, activeStory.tagline, activeStory.bgGrad);
+            const avatarCanvas = document.getElementById('activeAvatarCanvas');
+            const ctx = avatarCanvas.getContext('2d');
+            const img = new Image();
+            img.onload = () => ctx.drawImage(img, 0, 0, 100, 100);
+            img.src = avatarUrl;
+
+            document.getElementById('currentStoryTitle').innerText = activeStory.title;
+            document.getElementById('currentStoryGenre').innerText = activeStory.category + ' • Roleplay World';
+
+            document.getElementById('userInput').disabled = false;
+            document.getElementById('sendBtn').disabled = false;
+            document.getElementById('configBtn').style.display = 'flex';
+            document.getElementById('saveStoryBtn').style.display = 'flex';
+
+            if (!chatHistories[id]) {
+                chatHistories[id] = [{ sender: 'ai', text: activeStory.intro }];
+            }
+
+            renderChat();
+        }
+
+        function renderChat() {
+            const chatBox = document.getElementById('chatBox');
+            chatBox.innerHTML = '';
+
+            const history = chatHistories[activeStory.id] || [];
+            history.forEach(msg => {
+                const el = document.createElement('div');
+                el.className = `message ${msg.sender}`;
+                el.innerText = msg.text;
+                chatBox.appendChild(el);
+            });
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const text = input.value.trim();
+            if (!text || !activeStory) return;
+
+            chatHistories[activeStory.id].push({ sender: 'user', text: text });
+            input.value = '';
+            renderChat();
+
+            setTimeout(() => {
+                const aiReply = generateRoleplayResponse(text);
+                chatHistories[activeStory.id].push({ sender: 'ai', text: aiReply });
+                renderChat();
+            }, 800);
+        }
+
+        function generateRoleplayResponse(userPrompt) {
+            const traits = characterTraits.selectedTraits;
+            let narration = "*Usne tumhari baat suni aur thoda muskura di.*";
+            let dialogue = "";
+
+            if (traits.includes('Very Funny') || traits.includes('Witty')) {
+                dialogue = `"Arey wah! Itna joke marne ki zaroorat nahi hai. Waise, funny toh tha!"`;
+            } else if (traits.includes('Serious') || traits.includes('Not Funny')) {
+                dialogue = `"Mujhe mazak bilkul pasand nahi hai. Point par aao."`;
+            } else if (traits.includes('Sarcastic')) {
+                dialogue = `"Kamaal kar diya tumne! Kya awards milna chahiye is baat par?"`;
+            } else {
+                dialogue = `"Achha? Aur aage kya kehna chahte ho?"`;
+            }
+
+            return `${narration}\n\nCharacter: ${dialogue}`;
+        }
+
+        function saveCurrentStoryLocally() {
+            if (!activeStory) return;
+
+            const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
+            savedData[activeStory.id] = {
+                history: chatHistories[activeStory.id],
+                traits: characterTraits,
+                timestamp: Date.now()
+            };
+
+            localStorage.setItem('roleplay_saved_stories', JSON.stringify(savedData));
+            renderStories();
+
+            const toast = document.getElementById('toastMsg');
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 2500);
+        }
+
+        function loadSavedStoriesFromStorage() {
+            const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
+            Object.keys(savedData).forEach(id => {
+                chatHistories[id] = savedData[id].history;
+            });
+        }
+
+        document.getElementById('userInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        /* Config Functions */
+        function openPersonalityModal() {
+            document.getElementById('personalityModal').style.display = 'flex';
+        }
+
+        function savePersonality() {
+            const traits = [];
+            if (document.getElementById('traitNormal').checked) traits.push('Normal');
+            if (document.getElementById('traitVeryFunny').checked) traits.push('Very Funny');
+            if (document.getElementById('traitWitty').checked) traits.push('Witty');
+            if (document.getElementById('traitSerious').checked) traits.push('Serious');
+            if (document.getElementById('traitNotFunny').checked) traits.push('Not Funny');
+            if (document.getElementById('traitSarcastic').checked) traits.push('Sarcastic');
+            if (document.getElementById('traitIntrovert').checked) traits.push('Introvert');
+            if (document.getElementById('traitExtrovert').checked) traits.push('Extrovert');
+            if (document.getElementById('traitRude').checked) traits.push('Rude');
+            if (document.getElementById('traitPolite').checked) traits.push('Polite');
+
+            characterTraits.selectedTraits = traits;
+            characterTraits.emotion = document.getElementById('levelEmotion').value;
+            characterTraits.anger = document.getElementById('levelAnger').value;
+            characterTraits.iq = document.getElementById('levelIQ').value;
+            characterTraits.charClass = document.getElementById('charMoneyClass').value;
+            characterTraits.userClass = document.getElementById('userMoneyClass').value;
+
+            closeModal('personalityModal');
+        }
+
+        /* ADMIN PORTAL: EDIT, DELETE & PUBLISH LOGIC */
+        function openAdminLogin() {
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function handleLogin() {
+            const u = document.getElementById('adminUser').value;
+            const p = document.getElementById('adminPass').value;
+
+            if (u === 'MdYeasinAlam' && p === '25801@Yeasin') {
+                closeModal('loginModal');
+                document.getElementById('adminUser').value = '';
+                document.getElementById('adminPass').value = '';
+                openAdminDashboard();
+            } else {
+                alert('Invalid Admin Username or Password!');
+            }
+        }
+
+        function openAdminDashboard() {
+            renderAdminDashboard();
+            document.getElementById('adminDashboardModal').style.display = 'flex';
+        }
+
+        function renderAdminDashboard() {
+            const container = document.getElementById('adminStoryList');
+            container.innerHTML = '';
+
+            stories.forEach(story => {
+                const row = document.createElement('div');
+                row.className = 'admin-item-row';
+                row.innerHTML = `
+                    <div>
+                        <strong>${story.title}</strong>
+                        <div style="font-size:0.75rem; color:var(--text-sub);">${story.category} • ${story.tagline}</div>
+                    </div>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn-pri" style="padding:4px 10px; font-size:0.75rem;" onclick="openEditForm('${story.id}')">Edit</button>
+                        <button class="btn-danger" style="padding:4px 10px; font-size:0.75rem;" onclick="deleteStoryFromAdmin('${story.id}')">Remove</button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function openPublishForm() {
+            document.getElementById('editModalTitle').innerText = 'Publish New Story';
+            document.getElementById('editStoryId').value = '';
+            document.getElementById('editTitle').value = '';
+            document.getElementById('editTagline').value = '';
+            document.getElementById('editCategory').value = 'Campus';
+            document.getElementById('editColor1').value = '#9333ea';
+            document.getElementById('editColor2').value = '#db2777';
+            document.getElementById('editIntro').value = '';
+
+            document.getElementById('adminEditModal').style.display = 'flex';
+        }
+
+        function openEditForm(id) {
+            const story = stories.find(s => s.id === id);
+            if (!story) return;
+
+            document.getElementById('editModalTitle').innerText = 'Edit Story: ' + story.title;
+            document.getElementById('editStoryId').value = story.id;
+            document.getElementById('editTitle').value = story.title;
+            document.getElementById('editTagline').value = story.tagline || '';
+            document.getElementById('editCategory').value = story.category;
+            document.getElementById('editColor1').value = story.bgGrad[0] || '#9333ea';
+            document.getElementById('editColor2').value = story.bgGrad[1] || '#db2777';
+            document.getElementById('editIntro').value = story.intro;
+
+            document.getElementById('adminEditModal').style.display = 'flex';
+        }
+
+        function saveStoryFromAdmin() {
+            const id = document.getElementById('editStoryId').value;
+            const title = document.getElementById('editTitle').value.trim();
+            const tagline = document.getElementById('editTagline').value.trim() || 'Roleplay Adventure';
+            const cat = document.getElementById('editCategory').value;
+            const c1 = document.getElementById('editColor1').value;
+            const c2 = document.getElementById('editColor2').value;
+            const intro = document.getElementById('editIntro').value.trim();
+
+            if (!title || !intro) return alert('Please enter Title and Description Intro');
+
+            if (id) {
+                // Edit existing story
+                const index = stories.findIndex(s => s.id === id);
+                if (index !== -1) {
+                    stories[index].title = title;
+                    stories[index].tagline = tagline;
+                    stories[index].category = cat;
+                    stories[index].bgGrad = [c1, c2];
+                    stories[index].intro = intro;
+                }
+            } else {
+                // Publish new story
+                const newStory = {
+                    id: Date.now().toString(),
+                    title: title,
+                    tagline: tagline,
+                    category: cat,
+                    popular: false,
+                    bgGrad: [c1, c2],
+                    intro: intro
+                };
+                stories.unshift(newStory);
+            }
+
+            localStorage.setItem('roleplay_admin_stories', JSON.stringify(stories));
+
+            closeModal('adminEditModal');
+            renderAdminDashboard();
+            renderStories();
+
+            if (activeStory && activeStory.id === id) {
+                selectStory(id);
+            }
+        }
+
+        function deleteStoryFromAdmin(id) {
+            if (!confirm('Are you sure you want to remove this story?')) return;
+
+            stories = stories.filter(s => s.id !== id);
+            localStorage.setItem('roleplay_admin_stories', JSON.stringify(stories));
+
+            renderAdminDashboard();
+            renderStories();
+
+            if (activeStory && activeStory.id === id) {
+                activeStory = null;
+                document.getElementById('currentStoryTitle').innerText = 'Select a Story';
+                document.getElementById('userInput').disabled = true;
+                document.getElementById('sendBtn').disabled = true;
+            }
+        }
+    </script>
 </body>
 </html>
