@@ -2,20 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roleplay AI - Story World</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Roleplay AI - Interactive Story Hub</title>
     <style>
         :root {
-            --bg: #090d16;
-            --card-bg: #131b2e;
-            --sidebar-bg: #0d1322;
+            --bg-main: #0b0f17;
+            --panel-bg: #131a2a;
+            --card-bg: #182238;
             --accent-purple: #9333ea;
             --accent-pink: #db2777;
-            --text-main: #f8fafc;
-            --text-sub: #94a3b8;
-            --border: #1e293b;
-            --user-msg: #581c87;
-            --ai-msg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: #1e293b;
+            --user-bubble: #581c87;
+            --ai-bubble: #1e293b;
         }
 
         * {
@@ -23,556 +23,668 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            height: 100dvh;
+            width: 100%;
+            overflow: hidden;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text-main);
             display: flex;
-            height: 100vh;
-            overflow: hidden;
+            justify-content: center;
         }
 
-        /* Sidebar Navigation */
-        .sidebar {
-            width: 380px;
-            background-color: var(--sidebar-bg);
-            border-right: 1px solid var(--border);
+        /* Mobile Shell Container */
+        .app-shell {
+            width: 100%;
+            max-width: 480px;
+            height: 100%;
             display: flex;
             flex-direction: column;
+            background-color: var(--bg-main);
+            position: relative;
+            box-shadow: 0 0 25px rgba(0,0,0,0.8);
         }
 
-        .brand-header {
-            padding: 16px 20px;
-            background: linear-gradient(135deg, rgba(147, 51, 234, 0.25), rgba(219, 39, 119, 0.25));
-            border-bottom: 1px solid var(--border);
+        /* Top Bar */
+        .top-navbar {
+            padding: 12px 16px;
+            background: rgba(13, 19, 34, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            z-index: 20;
+            flex-shrink: 0;
         }
 
-        .brand-header h1 {
-            font-size: 1.4rem;
+        .top-navbar h1 {
+            font-size: 1.25rem;
             font-weight: 800;
             background: linear-gradient(to right, #c084fc, #f472b6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .free-badge {
-            background: rgba(16, 185, 129, 0.2);
-            color: #34d399;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            border: 1px solid rgba(16, 185, 129, 0.4);
-        }
-
-        .filters {
-            display: flex;
-            gap: 8px;
-            padding: 12px;
-            overflow-x: auto;
-            border-bottom: 1px solid var(--border);
-            scrollbar-width: none;
-        }
-
-        .filters::-webkit-scrollbar { display: none; }
-
-        .filter-btn {
+        .admin-icon-btn {
             background: #1e293b;
-            color: var(--text-sub);
-            border: none;
-            padding: 6px 14px;
-            border-radius: 16px;
-            font-size: 0.8rem;
-            white-space: nowrap;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 0.75rem;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
-        .filter-btn.active, .filter-btn:hover {
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-            color: white;
-        }
-
-        .story-list {
+        /* Content Area */
+        .screen-container {
             flex: 1;
             overflow-y: auto;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .story-card {
-            display: flex;
-            gap: 12px;
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 10px;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
             position: relative;
-            align-items: center;
         }
 
-        .story-card:hover, .story-card.active {
-            border-color: var(--accent-purple);
-            transform: translateY(-2px);
-            background: #182238;
+        .app-screen {
+            display: none;
+            padding: 14px;
+            flex-direction: column;
+            gap: 18px;
+            padding-bottom: 85px; /* Ensures clearance above full-width bottom nav */
         }
 
-        .poster-canvas {
-            width: 80px;
-            height: 110px;
-            border-radius: 8px;
-            flex-shrink: 0;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        .app-screen.active {
+            display: flex;
+        }
+
+        /* Home Screen UI Elements */
+        .hero-banner {
+            width: 100%;
+            height: 220px;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background-color: var(--panel-bg);
+        }
+
+        .hero-banner img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
         }
 
-        .story-info {
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(9, 13, 22, 0.95), transparent 60%);
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            overflow: hidden;
-            flex: 1;
+            justify-content: flex-end;
+            padding: 16px;
         }
 
-        .story-title {
-            font-size: 0.95rem;
+        .hero-overlay h2 { font-size: 1.2rem; font-weight: 800; }
+        .hero-overlay p { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px; }
+
+        .btn-start-chat {
+            align-self: flex-start;
+            padding: 6px 16px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            border: none;
+            border-radius: 20px;
+            color: white;
             font-weight: 700;
-            margin-bottom: 6px;
+            font-size: 0.8rem;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-save-all-chats {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 6px 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Horizontal Story Strip */
+        .horizontal-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding-bottom: 4px;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar { display: none; }
+
+        .continue-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            width: 70px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .continue-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-purple);
+            background-color: var(--panel-bg);
+        }
+
+        .continue-item span {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        /* Category Filter Chips */
+        .category-scroll {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .category-scroll::-webkit-scrollbar { display: none; }
+
+        .chip {
+            padding: 6px 14px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .chip.active {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+            border-color: transparent;
+        }
+
+        /* Story Grid */
+        .story-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .grid-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .grid-poster-wrap {
+            width: 100%;
+            height: 150px;
+            position: relative;
+            background: var(--panel-bg);
+        }
+
+        .grid-poster-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .grid-info {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .grid-info h4 {
+            font-size: 0.85rem;
+            font-weight: 700;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .story-meta {
+        .grid-meta {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .badge-mini {
+            font-size: 0.6rem;
+            padding: 1px 4px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .badge-pop { background: #f59e0b; color: black; }
+        .badge-18 { background: #ef4444; color: white; }
+
+        /* Search Screen UI */
+        .search-input-box {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.75rem;
-            color: var(--text-sub);
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 8px 16px;
+            gap: 10px;
         }
 
-        .popular-badge {
-            background: #f59e0b;
-            color: black;
-            font-size: 0.65rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-
-        .saved-badge {
-            background: #10b981;
-            color: black;
-            font-size: 0.65rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-
-        .admin-trigger {
-            padding: 12px;
-            background: var(--sidebar-bg);
-            border-top: 1px solid var(--border);
-            color: var(--text-sub);
+        .search-input-box input {
+            background: transparent;
             border: none;
-            cursor: pointer;
-            text-align: center;
-            font-size: 0.85rem;
+            outline: none;
+            color: white;
+            font-size: 0.9rem;
+            width: 100%;
         }
 
-        .admin-trigger:hover { color: #c084fc; }
-
-        /* Main Workspace */
-        .main-chat {
-            flex: 1;
+        /* Active Chats Inbox List UI */
+        .chat-inbox-list {
             display: flex;
             flex-direction: column;
-            background: var(--bg);
-            position: relative;
+            gap: 10px;
         }
 
-        .chat-header {
-            padding: 12px 20px;
-            background: var(--sidebar-bg);
-            border-bottom: 1px solid var(--border);
+        .inbox-item {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .inbox-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-purple);
+            background-color: var(--panel-bg);
+        }
+
+        .inbox-details {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .inbox-details h4 {
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .inbox-details p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Dynamic Chat Window View (Overlays Main Shell when Active) */
+        .chat-window-view {
+            position: absolute;
+            inset: 0;
+            background: var(--bg-main);
+            z-index: 50;
+            display: none;
+            flex-direction: column;
+        }
+
+        .chat-window-view.active {
+            display: flex;
+        }
+
+        .chat-view-header {
+            padding: 10px 14px;
+            background: var(--panel-bg);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .header-profile {
+        .chat-header-profile {
             display: flex;
             align-items: center;
+            gap: 10px;
+            overflow: hidden;
+        }
+
+        .btn-back {
+            background: var(--card-bg);
+            color: white;
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .chat-avatar-mini {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--accent-purple);
+            background-color: var(--panel-bg);
+        }
+
+        .chat-header-titles h3 { font-size: 0.95rem; }
+        .chat-header-titles p { font-size: 0.7rem; color: var(--text-secondary); }
+
+        .chat-actions { display: flex; gap: 6px; }
+
+        .chat-btn {
+            background: #1e293b;
+            color: white;
+            border: 1px solid var(--border-color);
+            padding: 6px 10px;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .chat-btn-fav { background: linear-gradient(135deg, #ec4899, #db2777); border: none; }
+
+        .chat-conversation-area {
+            flex: 1;
+            padding: 14px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
             gap: 12px;
         }
 
-        .header-avatar-canvas {
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            border: 2px solid var(--accent-purple);
-            object-fit: cover;
-        }
-
-        .header-text h3 { font-size: 1.1rem; }
-        .header-text p { font-size: 0.8rem; color: var(--text-sub); }
-
-        .action-btn-group {
-            display: flex;
-            gap: 8px;
-        }
-
-        .settings-btn {
-            background: #1e293b;
-            border: 1px solid var(--border);
-            color: white;
-            padding: 8px 14px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .settings-btn:hover { background: var(--accent-purple); }
-
-        .save-btn {
-            background: #10b981;
-            color: black;
-            font-weight: bold;
-            border: none;
-        }
-
-        .save-btn:hover { background: #059669; color: white; }
-
-        /* Chat Workspace */
-        .chat-box {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 14px 18px;
-            border-radius: 16px;
-            line-height: 1.6;
-            font-size: 0.95rem;
+        .chat-msg {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 14px;
+            line-height: 1.4;
+            font-size: 0.88rem;
             white-space: pre-wrap;
         }
 
-        .message.ai {
-            background-color: var(--ai-msg);
+        .chat-msg.ai {
+            background-color: var(--ai-bubble);
             align-self: flex-start;
-            border-bottom-left-radius: 4px;
-            border: 1px solid var(--border);
+            border-bottom-left-radius: 2px;
+            border: 1px solid var(--border-color);
             color: #e2e8f0;
         }
 
-        .message.user {
+        .chat-msg.user {
             background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
             align-self: flex-end;
-            border-bottom-right-radius: 4px;
+            border-bottom-right-radius: 2px;
             color: white;
         }
 
-        .input-bar {
-            padding: 16px 20px;
-            background: var(--sidebar-bg);
-            border-top: 1px solid var(--border);
+        .chat-photo-attachment {
+            width: 100%;
+            max-width: 240px;
+            border-radius: 10px;
+            margin-top: 6px;
+            display: block;
+            border: 1px solid var(--accent-purple);
+        }
+
+        .chat-input-bar {
+            padding: 10px 14px;
+            background: var(--panel-bg);
+            border-top: 1px solid var(--border-color);
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .input-bar input {
+        .chat-input-bar input {
             flex: 1;
-            padding: 12px 18px;
-            border-radius: 24px;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            color: var(--text-main);
+            padding: 10px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-main);
+            color: white;
             outline: none;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
         }
 
-        .input-bar input:focus { border-color: var(--accent-purple); }
-
-        .input-bar button {
-            padding: 12px 24px;
+        .chat-input-bar button {
+            padding: 10px 18px;
             background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
             border: none;
-            border-radius: 24px;
+            border-radius: 20px;
             color: white;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
         }
 
-        /* Modals */
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(5px);
+        /* FIXED FULL-WIDTH BOTTOM NAVIGATION BAR */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 65px;
+            padding-bottom: max(0px, env(safe-area-inset-bottom));
+            background: rgba(19, 26, 42, 0.98);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 40;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            padding: 24px;
-            border-radius: 16px;
-            width: 550px;
-            max-width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            border: 1px solid var(--border);
-        }
-
-        .checkbox-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            background: var(--bg);
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
-            color: var(--text-main);
+            gap: 4px;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
             cursor: pointer;
+            text-decoration: none;
+            flex: 1;
+            height: 100%;
+            transition: all 0.2s ease;
         }
 
-        .checkbox-item input { accent-color: var(--accent-purple); }
-
-        .slider-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
+        .nav-item.active {
+            color: #c084fc;
+            font-weight: bold;
         }
 
-        .slider-label {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            color: var(--text-sub);
+        .nav-item svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
         }
 
-        .slider-group input[type="range"] {
-            width: 100%;
-            accent-color: var(--accent-purple);
-        }
-
-        .modal-content select, .modal-content input[type="text"], .modal-content textarea {
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            color: var(--text-main);
-            width: 100%;
-        }
-
-        .modal-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .btn-sec {
-            background: transparent;
-            color: var(--text-sub);
-            border: none;
-            cursor: pointer;
-            padding: 8px 16px;
-        }
-
-        .btn-pri {
-            padding: 8px 18px;
-            background: var(--accent-purple);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .btn-danger {
-            padding: 8px 18px;
-            background: #ef4444;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        /* Admin Table View */
-        .admin-item-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background: var(--bg);
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
+        /* Toast Popup Notification */
+        .toast-notification {
+            position: absolute;
+            bottom: 75px;
+            left: 50%;
+            transform: translateX(-50%);
             background: #10b981;
             color: black;
             font-weight: bold;
-            padding: 12px 20px;
-            border-radius: 8px;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.8rem;
             display: none;
-            z-index: 200;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            white-space: nowrap;
         }
+
+        /* Admin Modals */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 100; }
+        .modal-content { background: var(--panel-bg); padding: 20px; border-radius: 16px; width: 440px; max-width: 92%; max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--border-color); }
+        .modal-content select, .modal-content input[type="text"], .modal-content textarea { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: white; width: 100%; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+        .btn-sec { background: transparent; color: var(--text-secondary); border: none; cursor: pointer; padding: 8px 16px; }
+        .btn-pri { padding: 8px 18px; background: var(--accent-purple); color: white; border: none; border-radius: 8px; cursor: pointer; }
+        .btn-danger { padding: 8px 18px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="brand-header">
+    <div class="app-shell">
+        <!-- Top Navbar -->
+        <div class="top-navbar">
             <h1>Roleplay AI</h1>
-            <span class="free-badge">100% FREE</span>
+            <button class="admin-icon-btn" onclick="openAdminLogin()">⚙ Admin</button>
         </div>
 
-        <div class="filters">
-            <button class="filter-btn active" onclick="filterCategory('All')">All</button>
-            <button class="filter-btn" onclick="filterCategory('Saved')">💾 Saved</button>
-            <button class="filter-btn" onclick="filterCategory('Campus')">Campus & Drama</button>
-            <button class="filter-btn" onclick="filterCategory('Horror')">Horror & Mystery</button>
-            <button class="filter-btn" onclick="filterCategory('Sci-Fi')">Sci-Fi & Fantasy</button>
-            <button class="filter-btn" onclick="filterCategory('Romance')">Romance</button>
-            <button class="filter-btn" onclick="filterCategory('Action')">Action & Crime</button>
-        </div>
+        <div class="toast-notification" id="toastBox">Saved to LocalStorage!</div>
 
-        <div class="story-list" id="storyList"></div>
+        <!-- Scrollable Screen Container -->
+        <div class="screen-container">
+            
+            <!-- 1. HOME SCREEN VIEW -->
+            <div class="app-screen active" id="screenHome">
+                <!-- Featured Hero Banner -->
+                <div class="hero-banner" onclick="selectStory('1')">
+                    <img id="heroImg" src="" alt="" onerror="this.src='https://image.pollinations.ai/prompt/romantic%20indian%20college%20couple?width=400&height=550&nologo=true'">
+                    <div class="hero-overlay">
+                        <h2 id="heroTitle">Campus Ke Dil Ki Dhadkan</h2>
+                        <p id="heroMeta">Romance • Popular</p>
+                        <button class="btn-start-chat">START CHAT</button>
+                    </div>
+                </div>
 
-        <button class="admin-trigger" onclick="openAdminLogin()">⚙ Admin Portal</button>
-    </div>
+                <!-- Continue Chat Bar -->
+                <div class="section-title">Continue Chat</div>
+                <div class="horizontal-scroll" id="continueChatScroll">
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);">No active chats yet. Pick a story below to start!</div>
+                </div>
 
-    <!-- Main Dynamic Chat Area -->
-    <div class="main-chat">
-        <div class="chat-header">
-            <div class="header-profile">
-                <canvas id="activeAvatarCanvas" class="header-avatar-canvas" width="100" height="100"></canvas>
-                <div class="header-text">
-                    <h3 id="currentStoryTitle">Select a Story</h3>
-                    <p id="currentStoryGenre">Interactive AI Roleplay Hub</p>
+                <!-- Category Filters -->
+                <div class="category-scroll">
+                    <button class="chip active" onclick="filterHomeCategory('All')">All</button>
+                    <button class="chip" onclick="filterHomeCategory('Favorites')">❤️ Favorites</button>
+                    <button class="chip" onclick="filterHomeCategory('Romance')">Romance</button>
+                    <button class="chip" onclick="filterHomeCategory('Drama')">Drama</button>
+                    <button class="chip" onclick="filterHomeCategory('English')">English</button>
+                    <button class="chip" onclick="filterHomeCategory('Crime')">Crime</button>
+                    <button class="chip" onclick="filterHomeCategory('Sci-Fi')">Sci-Fi</button>
+                    <button class="chip" onclick="filterHomeCategory('Mature')">🔥 Mature 18+</button>
+                </div>
+
+                <!-- Main Story Grid -->
+                <div class="section-title">Explore Stories</div>
+                <div class="story-grid" id="homeStoryGrid"></div>
+            </div>
+
+            <!-- 2. SEARCH SCREEN VIEW -->
+            <div class="app-screen" id="screenSearch">
+                <div class="search-input-box">
+                    <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: var(--text-secondary);"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                    <input type="text" id="searchInput" placeholder="Search for characters or story topics..." oninput="handleSearchInput()">
+                </div>
+                <div class="section-title">Search Results</div>
+                <div class="story-grid" id="searchStoryGrid"></div>
+            </div>
+
+            <!-- 3. CHATS INBOX SCREEN VIEW -->
+            <div class="app-screen" id="screenChats">
+                <div class="section-title">
+                    <span>Active Conversations</span>
+                    <button class="btn-save-all-chats" onclick="saveAllActiveChatsToLocalStorage()">💾 Save All Chats</button>
+                </div>
+                <div class="chat-inbox-list" id="chatInboxList">
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); padding: 10px;">No active conversations. Start chatting with any character from Home!</div>
                 </div>
             </div>
-            <div class="action-btn-group">
-                <button class="settings-btn save-btn" id="saveStoryBtn" onclick="saveCurrentStoryLocally()" style="display:none;">
-                    💾 Save Progress
-                </button>
-                <button class="settings-btn" id="configBtn" onclick="openPersonalityModal()" style="display:none;">
-                    ⚙ Persona Settings
-                </button>
+
+        </div>
+
+        <!-- Fullscreen Dynamic Chat Window Overlay -->
+        <div class="chat-window-view" id="chatWindowView">
+            <div class="chat-view-header">
+                <div class="chat-header-profile">
+                    <button class="btn-back" onclick="closeChatWindow()">← Back</button>
+                    <img id="chatHeaderAvatar" class="chat-avatar-mini" src="" alt="" onerror="this.src='https://image.pollinations.ai/prompt/portrait?width=400&height=550&nologo=true'">
+                    <div class="chat-header-titles">
+                        <h3 id="chatHeaderTitle">Story Title</h3>
+                        <p id="chatHeaderSub">Interactive Roleplay World</p>
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <button class="chat-btn chat-btn-fav" id="chatFavBtn" onclick="toggleFavoriteCurrentStory()">❤️ Fav</button>
+                    <button class="chat-btn" onclick="saveCurrentStoryLocally()">💾 Save</button>
+                </div>
+            </div>
+
+            <div class="chat-conversation-area" id="chatConversationArea"></div>
+
+            <div class="chat-input-bar">
+                <input type="text" id="userInput" placeholder="Type your action (e.g., 'send me a pic')...">
+                <button onclick="sendMessage()">Send</button>
             </div>
         </div>
 
-        <div class="chat-box" id="chatBox">
-            <div class="message ai">Welcome to Roleplay AI! Select any story topic to begin chatting directly.</div>
-        </div>
-
-        <div class="input-bar">
-            <input type="text" id="userInput" placeholder="Type your roleplay response..." disabled>
-            <button id="sendBtn" onclick="sendMessage()" disabled>Send</button>
-        </div>
-    </div>
-
-    <div class="toast" id="toastMsg">Progress Saved Locally!</div>
-
-    <!-- Personality Config Modal -->
-    <div class="modal" id="personalityModal">
-        <div class="modal-content">
-            <h3>⚙ Character & Persona Settings</h3>
-            
-            <h4 style="color: var(--accent-pink); font-size: 0.9rem;">1. Personality Traits</h4>
-            <div class="checkbox-group">
-                <label class="checkbox-item"><input type="checkbox" value="Normal" id="traitNormal" checked> Normal</label>
-                <label class="checkbox-item"><input type="checkbox" value="Very Funny" id="traitVeryFunny"> Very Funny</label>
-                <label class="checkbox-item"><input type="checkbox" value="Witty" id="traitWitty"> Witty</label>
-                <label class="checkbox-item"><input type="checkbox" value="Serious" id="traitSerious"> Serious</label>
-                <label class="checkbox-item"><input type="checkbox" value="Not Funny" id="traitNotFunny"> Not Funny</label>
-                <label class="checkbox-item"><input type="checkbox" value="Sarcastic" id="traitSarcastic"> Sarcastic</label>
-                <label class="checkbox-item"><input type="checkbox" value="Introvert" id="traitIntrovert"> Introvert</label>
-                <label class="checkbox-item"><input type="checkbox" value="Extrovert" id="traitExtrovert" checked> Extrovert</label>
-                <label class="checkbox-item"><input type="checkbox" value="Rude" id="traitRude" checked> Rude / Tsundere</label>
-                <label class="checkbox-item"><input type="checkbox" value="Polite" id="traitPolite"> Polite & Kind</label>
+        <!-- FIXED FULL-WIDTH BOTTOM NAVIGATION BAR -->
+        <div class="bottom-nav">
+            <div class="nav-item active" id="tabHome" onclick="switchTab('Home')">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                <span>Home</span>
             </div>
-
-            <h4 style="color: var(--accent-pink); font-size: 0.9rem;">2. Emotion & Ability Levels</h4>
-            <div class="slider-group">
-                <div class="slider-label"><span>Emotional Level (0-10)</span><b id="valEmotion">5</b></div>
-                <input type="range" id="levelEmotion" min="0" max="10" value="5" oninput="document.getElementById('valEmotion').innerText = this.value">
+            <div class="nav-item" id="tabSearch" onclick="switchTab('Search')">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <span>Search</span>
             </div>
-
-            <div class="slider-group">
-                <div class="slider-label"><span>Anger Level (0-10)</span><b id="valAnger">3</b></div>
-                <input type="range" id="levelAnger" min="0" max="10" value="3" oninput="document.getElementById('valAnger').innerText = this.value">
-            </div>
-
-            <div class="slider-group">
-                <div class="slider-label"><span>IQ Level (67 - 112)</span><b id="valIQ">100</b></div>
-                <input type="range" id="levelIQ" min="67" max="112" value="100" oninput="document.getElementById('valIQ').innerText = this.value">
-            </div>
-
-            <h4 style="color: var(--accent-pink); font-size: 0.9rem;">3. Financial Class Settings</h4>
-            <div class="slider-group">
-                <div class="slider-label"><span>Character's Money Class</span></div>
-                <select id="charMoneyClass">
-                    <option value="Poor Class">Poor Class</option>
-                    <option value="Middle Class" selected>Middle Class</option>
-                    <option value="Rich Class">Rich Class / Billionaire</option>
-                </select>
-            </div>
-
-            <div class="slider-group">
-                <div class="slider-label"><span>Your Persona's Money Class</span></div>
-                <select id="userMoneyClass">
-                    <option value="Poor Class">Poor Class</option>
-                    <option value="Middle Class" selected>Middle Class</option>
-                    <option value="Rich Class">Rich Class / Billionaire</option>
-                </select>
-            </div>
-
-            <div class="modal-actions">
-                <button class="btn-sec" onclick="closeModal('personalityModal')">Cancel</button>
-                <button class="btn-pri" onclick="savePersonality()">Save Settings</button>
+            <div class="nav-item" id="tabChats" onclick="switchTab('Chats')">
+                <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+                <span>Chats</span>
             </div>
         </div>
     </div>
 
     <!-- Admin Login Modal -->
     <div class="modal" id="loginModal">
-        <div class="modal-content" style="width: 380px;">
-            <h3>Admin Portal Login</h3>
+        <div class="modal-content">
+            <h3>Admin Login</h3>
             <input type="text" id="adminUser" placeholder="Username">
             <input type="password" id="adminPass" placeholder="Password">
             <div class="modal-actions">
@@ -582,199 +694,286 @@
         </div>
     </div>
 
-    <!-- Admin Dashboard Modal (Edit / Delete / Publish) -->
+    <!-- Admin Dashboard Modal -->
     <div class="modal" id="adminDashboardModal">
         <div class="modal-content">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h3>⚙ Admin Story Management</h3>
-                <button class="btn-pri" onclick="openPublishForm()">+ Publish New Story</button>
+                <h3>⚙ Story Catalog Manager</h3>
+                <button class="btn-pri" onclick="openPublishForm()">+ Publish</button>
             </div>
-
-            <div id="adminStoryList" style="display:flex; flex-direction:column; gap:10px; max-height:400px; overflow-y:auto; margin-top:10px;"></div>
-
+            <div id="adminStoryList" style="display:flex; flex-direction:column; gap:8px; max-height:320px; overflow-y:auto; margin-top:8px;"></div>
             <div class="modal-actions">
                 <button class="btn-sec" onclick="closeModal('adminDashboardModal')">Close</button>
             </div>
         </div>
     </div>
 
-    <!-- Admin Story Editor/Publish Modal -->
+    <!-- Admin Edit / Publish Modal -->
     <div class="modal" id="adminEditModal">
         <div class="modal-content">
-            <h3 id="editModalTitle">Publish New Story</h3>
+            <h3 id="editModalTitle">Publish Story</h3>
             <input type="hidden" id="editStoryId">
-            
-            <label style="font-size:0.8rem; color:var(--text-sub);">Story Name / Title:</label>
             <input type="text" id="editTitle" placeholder="Story Title">
-
-            <label style="font-size:0.8rem; color:var(--text-sub);">Tagline / Subtitle:</label>
-            <input type="text" id="editTagline" placeholder="e.g. Where Love Meets Dreams">
-
-            <label style="font-size:0.8rem; color:var(--text-sub);">Category:</label>
             <select id="editCategory">
-                <option value="Campus">Campus & Drama</option>
-                <option value="Horror">Horror & Mystery</option>
-                <option value="Sci-Fi">Sci-Fi & Fantasy</option>
                 <option value="Romance">Romance</option>
-                <option value="Action">Action & Crime</option>
+                <option value="Drama">Drama</option>
+                <option value="English">English</option>
+                <option value="Crime">Crime</option>
+                <option value="Sci-Fi">Sci-Fi</option>
+                <option value="Mature">Mature 18+</option>
             </select>
-
-            <div style="display:flex; gap:10px;">
-                <div style="flex:1;">
-                    <label style="font-size:0.8rem; color:var(--text-sub);">Thumbnail Color 1:</label>
-                    <input type="color" id="editColor1" value="#9333ea" style="height:40px;">
-                </div>
-                <div style="flex:1;">
-                    <label style="font-size:0.8rem; color:var(--text-sub);">Thumbnail Color 2:</label>
-                    <input type="color" id="editColor2" value="#db2777" style="height:40px;">
-                </div>
-            </div>
-
-            <label style="font-size:0.8rem; color:var(--text-sub);">Initial Scene Prompt (Description):</label>
-            <textarea id="editIntro" rows="4" placeholder="Enter starting scene prompt..."></textarea>
-
+            <input type="text" id="editPrompt" placeholder="✨ Pollinations.ai Image Prompt">
+            <textarea id="editIntro" rows="3" placeholder="Initial Starting Scene Prompt..."></textarea>
             <div class="modal-actions">
                 <button class="btn-sec" onclick="closeModal('adminEditModal')">Cancel</button>
-                <button class="btn-pri" onclick="saveStoryFromAdmin()">Publish / Save Story</button>
+                <button class="btn-pri" onclick="saveStoryFromAdmin()">Publish Story</button>
             </div>
         </div>
     </div>
 
     <script>
-        const initialDataset = [
-            { id: '1', title: 'Campus Ke Dil Ki Dhadkan', category: 'Campus', popular: true, tagline: 'Where Love Meets Dreams', bgGrad: ['#ec4899', '#8b5cf6'], intro: '*Library mein tumhare aage Aisha khadi hai aur tum se galti se takra gaye ho, jis wajah se uski mehangi kitabein neeche gir gayi.*\n\nAisha: "Dikhta nahi hai kya? Gawaar kahin ke! Excuse me? Tumne meri books girayi aur ab mujhe hi dekh rahe ho?"' },
-            { id: '2', title: 'Priya: Bad Husband', category: 'Campus', popular: false, tagline: 'A Broken Marriage', bgGrad: ['#ef4444', '#7c3aed'], intro: '*Priya quietly sits in the room waiting for you to return.*\n\nPriya: "It is 2 AM. Do you even care about us anymore?"' },
-            { id: '3', title: 'Nikki: Anime Cutie', category: 'Campus', popular: false, tagline: 'Kawaii Campus Love', bgGrad: ['#f472b6', '#38bdf8'], intro: '*Nikki runs carrying anime magazines and drops them at your feet.*\n\nNikki: "Gomen ne! I was in such a rush!"' },
-            { id: '4', title: 'Haley: Queen Bee', category: 'Campus', popular: false, tagline: 'High School Royalty', bgGrad: ['#f59e0b', '#ec4899'], intro: '*Haley lowers her sunglasses in the campus hallway.*\n\nHaley: "You think you can sit at our table?"' },
-            { id: '5', title: 'Niharika: Rising Star', category: 'Campus', popular: false, tagline: 'Music & Romance', bgGrad: ['#a855f7', '#06b6d4'], intro: '*Niharika is singing backstage when you walk in.*\n\nNiharika: "Oh! I didn\'t hear you come in..."' },
-            { id: '6', title: 'Neel: Gamer', category: 'Campus', popular: false, tagline: 'E-Sports Destiny', bgGrad: ['#3b82f6', '#10b981'], intro: '*Neel adjusts his RGB headset frantically typing.*\n\nNeel: "Bro, jump on Discord now!"' },
-            { id: '7', title: 'Suhana: Tu Chiz Badi Hai Mast Mast', category: 'Campus', popular: false, tagline: 'Dance Studio Beats', bgGrad: ['#f43f5e', '#fb923c'], intro: '*Suhana strikes a dramatic pose at dance practice.*\n\nSuhana: "Like what you see?"' },
-            { id: '8', title: 'Aryan: Silent Crush', category: 'Campus', popular: false, tagline: 'Quiet Heartbeats', bgGrad: ['#6366f1', '#a855f7'], intro: '*Aryan turns pages slowly as you sit beside him.*\n\nAryan: "*Blushes slightly* Uh... hi."' },
-            { id: '9', title: 'College Life: Pehla Pyaar', category: 'Campus', popular: false, tagline: 'First Rain Memories', bgGrad: ['#0ea5e9', '#6366f1'], intro: '*Rain pours on campus as someone shares an umbrella with you.*' },
-            { id: '10', title: 'Khooni Ghadi Ka Raaz', category: 'Horror', popular: true, tagline: 'Midnight Mystery', bgGrad: ['#1e1b4b', '#451a03'], intro: '*The grandfather clock ticks backward at 3:00 AM...*' },
-            { id: '11', title: 'X Ray Vision: Deewaron Ke Paar', category: 'Horror', popular: false, tagline: 'Supernatural Sight', bgGrad: ['#0284c7', '#0f172a'], intro: '*You put on the glasses and see hollow rooms inside walls...*' },
-            { id: '12', title: 'Raat Ka Sannata: Khabar Se Pare', category: 'Horror', popular: false, tagline: 'Emergency Broadcast', bgGrad: ['#b91c1c', '#111827'], intro: '*A loud alert wakes you up at midnight...*' },
-            { id: '13', title: 'Bhootia Haveli: Aakhri Tamanna', category: 'Horror', popular: false, tagline: 'Haunted Estate', bgGrad: ['#312e81', '#064e3b'], intro: '*The gates creak open by themselves...*' },
-            { id: '14', title: 'Murder Mystery: Shatranj Ka Khel', category: 'Horror', popular: false, tagline: 'Grandmaster Case', bgGrad: ['#475569', '#0f172a'], intro: '*Detective, the victim clutched a black chess king...*' },
-            { id: '15', title: 'Rishab: Insaaniyat Gaayab?', category: 'Sci-Fi', popular: false, tagline: 'Last Survivors', bgGrad: ['#2563eb', '#1e1b4b'], intro: '*Rishab checks the locator scan.*\n\nRishab: "The human count is zero..."' },
-            { id: '16', title: 'Time Travel: Ateet Ki Khoj', category: 'Sci-Fi', popular: false, tagline: 'Temporal Gateway', bgGrad: ['#d97706', '#431407'], intro: '*You step out of the portal into London 1824...*' },
-            { id: '17', title: 'Marriage Life: Rishton Ki Uljhan', category: 'Romance', popular: false, tagline: 'Arranged Bonds', bgGrad: ['#be123c', '#831843'], intro: '*Both families wait silently for your decision...*' },
-            { id: '18', title: 'CEO & Assistant: Office Contract', category: 'Romance', popular: false, tagline: 'Corporate Romance', bgGrad: ['#4338ca', '#312e81'], intro: '*The CEO pushes the paper across the table...*' },
-            { id: '19', title: 'Undercover Agent: Mission Alpha', category: 'Action', popular: false, tagline: 'Tactical Operation', bgGrad: ['#15803d', '#14532d'], intro: '*Agent, the target has entered the building...*' },
-            { id: '20', title: 'Mafia Boss: Duniya Ka Don', category: 'Action', popular: false, tagline: 'Underworld Empire', bgGrad: ['#7f1d1d', '#18181b'], intro: '*The luxury car stops.*\n\nBoss: "Ready to work for me?"' }
-        ];
+        function generatePollinationsUrl(promptText, seed = Math.floor(Math.random() * 1000)) {
+            const spicySuffix = ", highly aesthetic alluring portrait, gorgeous photorealistic poster 8k";
+            const cleanPrompt = encodeURIComponent((promptText || "attractive story portrait") + spicySuffix);
+            return `https://image.pollinations.ai/prompt/${cleanPrompt}?width=400&height=550&nologo=true&seed=${seed}`;
+        }
 
-        // Persistent Local Database for Stories
-        let stories = JSON.parse(localStorage.getItem('roleplay_admin_stories')) || initialDataset;
-        let activeCategory = 'All';
+        function buildFull200StoryCatalog() {
+            const categories = ['Romance', 'Drama', 'English', 'Crime', 'Sci-Fi', 'Mature'];
+            const catalog = [
+                { id: '1', title: 'Campus Ke Dil Ki Dhadkan', category: 'Romance', popular: true, mature: false, prompt: 'gorgeous young indian college girl in library, captivating aesthetic portrait', seed: 101, intro: '*Library mein tumhare aage Aisha khadi hai aur tum se galti se takra gaye ho, jis wajah se uski mehangi kitabein neeche gir gayi.*\n\nAisha: "Dikhta nahi hai kya? Gawaar kahin ke! Excuse me? Tumne meri books girayi aur ab mujhe hi dekh rahe ho?"' },
+                { id: '2', title: 'CEO & Assistant: Office Contract', category: 'Romance', popular: true, mature: false, prompt: 'alluring female executive assistant sitting on luxury desk, seductive aesthetic portrait', seed: 102, intro: '*The CEO pushes the contract paper across the glass desk.*\n\nCEO: "Sign this agreement, and your career is made. But there is one strictly personal condition..."' },
+                { id: '3', title: 'The Billionaire\'s Secret Bride', category: 'English', popular: true, mature: false, prompt: 'stunning bride in silk dress, aesthetic moody lighting portrait', seed: 103, intro: '*You stand in front of the grand mansion gates as Mr. Harrison steps out of his luxury car.*\n\nHarrison: "Welcome to your new life. Remember, this marriage remains behind closed doors."' },
+                { id: '4', title: 'Priya: Bad Husband', category: 'Mature', popular: true, mature: true, prompt: 'sensual young indian woman sitting on bed in dim room, seductive lighting', seed: 104, intro: '*Priya sits quietly in the dimly lit room as you enter late at night.*\n\nPriya: "It is 2 AM. Are you going to tell me where you were, or should I pack my bags?"' },
+                { id: '5', title: 'Mafia Boss: Duniya Ka Don', category: 'Crime', popular: true, mature: false, prompt: 'handsome mafia don boss in dark suit, aesthetic crime poster', seed: 105, intro: '*The armored convoy stops outside the fortress as the Don looks at you.*\n\nBoss: "Welcome to my empire. Make one mistake, and you are finished."' }
+            ];
+
+            const adjectives = ['Secret', 'Forbidden', 'Seductive', 'Dangerous', 'Midnight', 'Obsessive', 'Silent', 'Intimate', 'Lethal', 'Passionate'];
+            const nouns = ['Lover', 'Marriage', 'Contract', 'Heartbreak', 'Revenge', 'Desire', 'Empire', 'Affair', 'Shadow', 'Temptation'];
+
+            let count = catalog.length + 1;
+            while (count <= 210) {
+                const cat = categories[count % categories.length];
+                const isMature = (cat === 'Mature');
+                const title = `${adjectives[count % adjectives.length]} ${nouns[(count * 3) % nouns.length]} #${count}`;
+                const prompt = `alluring character portrait of ${title}, aesthetic lighting, photorealistic poster`;
+
+                catalog.push({
+                    id: count.toString(),
+                    title: title,
+                    category: cat,
+                    popular: count % 7 === 0,
+                    mature: isMature,
+                    prompt: prompt,
+                    seed: 200 + count,
+                    intro: `*Welcome to ${title}. The scene opens with a dramatic moment...*\n\nCharacter: "What are you going to do now?"`
+                });
+                count++;
+            }
+            return catalog;
+        }
+
+        let stories = JSON.parse(localStorage.getItem('roleplay_admin_stories')) || buildFull200StoryCatalog();
+        let userFavorites = JSON.parse(localStorage.getItem('roleplay_favorites') || '[]');
+        let activeHomeCategory = 'All';
         let activeStory = null;
         let chatHistories = {};
 
-        let characterTraits = {
-            emotion: 5,
-            anger: 3,
-            iq: 100,
-            selectedTraits: ['Normal', 'Extrovert', 'Rude'],
-            charClass: 'Middle Class',
-            userClass: 'Middle Class'
+        window.onload = () => {
+            loadSavedHistories();
+            initHeroBanner();
+            renderContinueChatScroll();
+            renderHomeGrid();
         };
 
-        function renderStoryPosterToDataUrl(title, tagline, colors) {
-            const canvas = document.createElement('canvas');
-            canvas.width = 160;
-            canvas.height = 220;
-            const ctx = canvas.getContext('2d');
-
-            const grad = ctx.createLinearGradient(0, 0, 160, 220);
-            grad.addColorStop(0, colors[0] || '#9333ea');
-            grad.addColorStop(1, colors[1] || '#db2777');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, 160, 220);
-
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
-            ctx.beginPath();
-            ctx.arc(80, 100, 45, 0, Math.PI * 2);
-            ctx.fill();
-
-            const overlay = ctx.createLinearGradient(0, 0, 0, 220);
-            overlay.addColorStop(0, 'rgba(0,0,0,0.1)');
-            overlay.addColorStop(0.6, 'rgba(0,0,0,0.4)');
-            overlay.addColorStop(1, 'rgba(0,0,0,0.9)');
-            ctx.fillStyle = overlay;
-            ctx.fillRect(0, 0, 160, 220);
-
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 13px sans-serif';
-            ctx.textAlign = 'center';
-            
-            const words = title.split(' ');
-            let line1 = words.slice(0, Math.ceil(words.length / 2)).join(' ');
-            let line2 = words.slice(Math.ceil(words.length / 2)).join(' ');
-            ctx.fillText(line1, 80, 175);
-            if (line2) ctx.fillText(line2, 80, 190);
-
-            ctx.fillStyle = '#f472b6';
-            ctx.font = 'italic 8px sans-serif';
-            ctx.fillText((tagline || '').toUpperCase(), 80, 205);
-
-            return canvas.toDataURL();
+        function showToast(msg) {
+            const box = document.getElementById('toastBox');
+            box.innerText = msg;
+            box.style.display = 'block';
+            setTimeout(() => box.style.display = 'none', 2500);
         }
 
-        window.onload = () => {
-            loadSavedStoriesFromStorage();
-            renderStories();
-        };
+        function loadSavedHistories() {
+            const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
+            Object.keys(savedData).forEach(id => {
+                chatHistories[id] = savedData[id].history;
+            });
+        }
 
-        function filterCategory(cat) {
-            activeCategory = cat;
-            document.querySelectorAll('.filter-btn').forEach(btn => {
+        function switchTab(tabName) {
+            document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+
+            if (tabName === 'Home') {
+                document.getElementById('screenHome').classList.add('active');
+                document.getElementById('tabHome').classList.add('active');
+                renderContinueChatScroll();
+                renderHomeGrid();
+            } else if (tabName === 'Search') {
+                document.getElementById('screenSearch').classList.add('active');
+                document.getElementById('tabSearch').classList.add('active');
+                handleSearchInput();
+            } else if (tabName === 'Chats') {
+                document.getElementById('screenChats').classList.add('active');
+                document.getElementById('tabChats').classList.add('active');
+                renderChatsInbox();
+            }
+        }
+
+        function initHeroBanner() {
+            const featured = stories[0];
+            const imgUrl = featured.img || generatePollinationsUrl(featured.prompt, featured.seed);
+            document.getElementById('heroImg').src = imgUrl;
+            document.getElementById('heroTitle').innerText = featured.title;
+            document.getElementById('heroMeta').innerText = `${featured.category} • Popular`;
+        }
+
+        function filterHomeCategory(cat) {
+            activeHomeCategory = cat;
+            document.querySelectorAll('.category-scroll .chip').forEach(btn => {
                 btn.classList.toggle('active', btn.innerText.includes(cat) || (cat === 'All' && btn.innerText === 'All'));
             });
-            renderStories();
+            renderHomeGrid();
         }
 
-        function isStorySaved(id) {
-            const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
-            return !!savedData[id];
+        function isFavorite(id) { return userFavorites.includes(id); }
+
+        function toggleFavoriteCurrentStory() {
+            if (!activeStory) return;
+            const idx = userFavorites.indexOf(activeStory.id);
+            if (idx === -1) userFavorites.push(activeStory.id);
+            else userFavorites.splice(idx, 1);
+            
+            localStorage.setItem('roleplay_favorites', JSON.stringify(userFavorites));
+            updateChatFavBtn();
+            renderHomeGrid();
         }
 
-        function renderStories() {
-            const list = document.getElementById('storyList');
-            list.innerHTML = '';
-
-            let filtered = stories;
-            if (activeCategory === 'Saved') {
-                const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
-                filtered = stories.filter(s => !!savedData[s.id]);
-            } else if (activeCategory !== 'All') {
-                filtered = stories.filter(s => s.category === activeCategory);
+        function updateChatFavBtn() {
+            const btn = document.getElementById('chatFavBtn');
+            if (activeStory && isFavorite(activeStory.id)) {
+                btn.innerText = '❤️ Favorited';
+            } else {
+                btn.innerText = '🤍 Fav';
             }
+        }
 
-            if (filtered.length === 0 && activeCategory === 'Saved') {
-                list.innerHTML = '<div style="padding:20px; color:var(--text-sub); text-align:center;">No saved stories yet!</div>';
+        function renderContinueChatScroll() {
+            const container = document.getElementById('continueChatScroll');
+            const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
+            const activeIds = Object.keys(savedData);
+
+            if (activeIds.length === 0) {
+                container.innerHTML = '<div style="font-size: 0.8rem; color: var(--text-secondary);">No active chats yet. Select any story below to play!</div>';
                 return;
             }
 
+            container.innerHTML = '';
+            activeIds.forEach(id => {
+                const story = stories.find(s => s.id === id);
+                if (!story) return;
+                const imgUrl = story.img || generatePollinationsUrl(story.prompt, story.seed);
+
+                const div = document.createElement('div');
+                div.className = 'continue-item';
+                div.onclick = () => selectStory(story.id);
+                div.innerHTML = `
+                    <img src="${imgUrl}" class="continue-avatar" alt="${story.title}" onerror="this.src='https://image.pollinations.ai/prompt/portrait?width=400&height=550&nologo=true'">
+                    <span>${story.title}</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function renderHomeGrid() {
+            const grid = document.getElementById('homeStoryGrid');
+            grid.innerHTML = '';
+
+            let filtered = stories;
+            if (activeHomeCategory === 'Favorites') {
+                filtered = stories.filter(s => isFavorite(s.id));
+            } else if (activeHomeCategory !== 'All') {
+                filtered = stories.filter(s => s.category === activeHomeCategory);
+            }
+
             filtered.forEach(story => {
-                const posterDataUrl = renderStoryPosterToDataUrl(story.title, story.tagline, story.bgGrad);
-                const saved = isStorySaved(story.id);
-
+                const imgUrl = story.img || generatePollinationsUrl(story.prompt, story.seed);
                 const card = document.createElement('div');
-                card.className = `story-card ${activeStory && activeStory.id === story.id ? 'active' : ''}`;
+                card.className = 'grid-card';
                 card.onclick = () => selectStory(story.id);
-
                 card.innerHTML = `
-                    <img src="${posterDataUrl}" class="poster-canvas" alt="Poster">
-                    <div class="story-info">
-                        <div class="story-title">${story.title}</div>
-                        <div class="story-meta">
+                    <div class="grid-poster-wrap">
+                        <img src="${imgUrl}" alt="${story.title}" loading="lazy" onerror="this.src='https://image.pollinations.ai/prompt/portrait?width=400&height=550&nologo=true'">
+                    </div>
+                    <div class="grid-info">
+                        <h4>${story.title}</h4>
+                        <div class="grid-meta">
                             <span>${story.category}</span>
-                            ${story.popular ? '<span class="popular-badge">POPULAR</span>' : ''}
-                            ${saved ? '<span class="saved-badge">SAVED</span>' : ''}
+                            ${story.popular ? '<span class="badge-mini badge-pop">POPULAR</span>' : ''}
+                            ${story.mature ? '<span class="badge-mini badge-18">18+</span>' : ''}
                         </div>
                     </div>
                 `;
-                list.appendChild(card);
+                grid.appendChild(card);
+            });
+        }
+
+        function handleSearchInput() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const grid = document.getElementById('searchStoryGrid');
+            grid.innerHTML = '';
+
+            const results = stories.filter(s => s.title.toLowerCase().includes(query) || s.category.toLowerCase().includes(query));
+
+            results.forEach(story => {
+                const imgUrl = story.img || generatePollinationsUrl(story.prompt, story.seed);
+                const card = document.createElement('div');
+                card.className = 'grid-card';
+                card.onclick = () => selectStory(story.id);
+                card.innerHTML = `
+                    <div class="grid-poster-wrap">
+                        <img src="${imgUrl}" alt="${story.title}" loading="lazy" onerror="this.src='https://image.pollinations.ai/prompt/portrait?width=400&height=550&nologo=true'">
+                    </div>
+                    <div class="grid-info">
+                        <h4>${story.title}</h4>
+                        <div class="grid-meta">
+                            <span>${story.category}</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderChatsInbox() {
+            const container = document.getElementById('chatInboxList');
+            const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
+            const activeIds = Object.keys(savedData);
+
+            if (activeIds.length === 0) {
+                container.innerHTML = '<div style="font-size: 0.85rem; color: var(--text-secondary); padding: 10px;">No active conversations. Start chatting with any character from Home!</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            activeIds.forEach(id => {
+                const story = stories.find(s => s.id === id);
+                if (!story) return;
+                const imgUrl = story.img || generatePollinationsUrl(story.prompt, story.seed);
+                const history = savedData[id].history || [];
+                const lastMsg = history.length > 0 ? history[history.length - 1].text : story.intro;
+
+                const item = document.createElement('div');
+                item.className = 'inbox-item';
+                item.onclick = () => selectStory(story.id);
+                item.innerHTML = `
+                    <img src="${imgUrl}" class="inbox-avatar" alt="${story.title}" onerror="this.src='https://image.pollinations.ai/prompt/portrait?width=400&height=550&nologo=true'">
+                    <div class="inbox-details">
+                        <h4>${story.title}</h4>
+                        <p>${lastMsg}</p>
+                    </div>
+                `;
+                container.appendChild(item);
             });
         }
 
@@ -785,46 +984,46 @@
             const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
             if (savedData[id]) {
                 chatHistories[id] = savedData[id].history;
-                characterTraits = savedData[id].traits;
-            }
-
-            renderStories();
-
-            const avatarUrl = renderStoryPosterToDataUrl(activeStory.title, activeStory.tagline, activeStory.bgGrad);
-            const avatarCanvas = document.getElementById('activeAvatarCanvas');
-            const ctx = avatarCanvas.getContext('2d');
-            const img = new Image();
-            img.onload = () => ctx.drawImage(img, 0, 0, 100, 100);
-            img.src = avatarUrl;
-
-            document.getElementById('currentStoryTitle').innerText = activeStory.title;
-            document.getElementById('currentStoryGenre').innerText = activeStory.category + ' • Roleplay World';
-
-            document.getElementById('userInput').disabled = false;
-            document.getElementById('sendBtn').disabled = false;
-            document.getElementById('configBtn').style.display = 'flex';
-            document.getElementById('saveStoryBtn').style.display = 'flex';
-
-            if (!chatHistories[id]) {
+            } else if (!chatHistories[id]) {
                 chatHistories[id] = [{ sender: 'ai', text: activeStory.intro }];
             }
 
-            renderChat();
+            const imgUrl = activeStory.img || generatePollinationsUrl(activeStory.prompt, activeStory.seed);
+            document.getElementById('chatHeaderAvatar').src = imgUrl;
+            document.getElementById('chatHeaderTitle').innerText = activeStory.title;
+            document.getElementById('chatHeaderSub').innerText = activeStory.category + ' • Roleplay World';
+
+            updateChatFavBtn();
+            renderChatConversation();
+
+            document.getElementById('chatWindowView').classList.add('active');
         }
 
-        function renderChat() {
-            const chatBox = document.getElementById('chatBox');
-            chatBox.innerHTML = '';
+        function closeChatWindow() {
+            document.getElementById('chatWindowView').classList.remove('active');
+            renderContinueChatScroll();
+            renderChatsInbox();
+        }
+
+        function renderChatConversation() {
+            const area = document.getElementById('chatConversationArea');
+            area.innerHTML = '';
 
             const history = chatHistories[activeStory.id] || [];
             history.forEach(msg => {
                 const el = document.createElement('div');
-                el.className = `message ${msg.sender}`;
-                el.innerText = msg.text;
-                chatBox.appendChild(el);
+                el.className = `chat-msg ${msg.sender}`;
+                
+                if (msg.photoUrl) {
+                    el.innerHTML = `<div>${msg.text}</div><img src="${msg.photoUrl}" class="chat-photo-attachment" alt="AI Photo">`;
+                } else {
+                    el.innerText = msg.text;
+                }
+                
+                area.appendChild(el);
             });
 
-            chatBox.scrollTop = chatBox.scrollHeight;
+            area.scrollTop = area.scrollHeight;
         }
 
         function sendMessage() {
@@ -834,229 +1033,155 @@
 
             chatHistories[activeStory.id].push({ sender: 'user', text: text });
             input.value = '';
-            renderChat();
+            renderChatConversation();
+
+            const lowerMsg = text.toLowerCase();
+            const photoRequested = lowerMsg.includes('pic') || lowerMsg.includes('photo') || lowerMsg.includes('image') || lowerMsg.includes('tasveer');
 
             setTimeout(() => {
-                const aiReply = generateRoleplayResponse(text);
-                chatHistories[activeStory.id].push({ sender: 'ai', text: aiReply });
-                renderChat();
+                if (photoRequested) {
+                    const photoPrompt = `${activeStory.prompt}, seductive pose, aesthetic lighting close up portrait`;
+                    const dynamicPhotoUrl = generatePollinationsUrl(photoPrompt, Math.floor(Math.random() * 9999));
+                    
+                    chatHistories[activeStory.id].push({ 
+                        sender: 'ai', 
+                        text: `*Here is the photo you requested...*`, 
+                        photoUrl: dynamicPhotoUrl 
+                    });
+                } else {
+                    const aiReply = `*In response to "${text}", the storyline continues with an intriguing twist.*\n\nCharacter: "What are you going to do next?"`;
+                    chatHistories[activeStory.id].push({ sender: 'ai', text: aiReply });
+                }
+                
+                saveCurrentStoryLocallySilently();
+                renderChatConversation();
             }, 800);
         }
 
-        function generateRoleplayResponse(userPrompt) {
-            const traits = characterTraits.selectedTraits;
-            let narration = "*Usne tumhari baat suni aur thoda muskura di.*";
-            let dialogue = "";
-
-            if (traits.includes('Very Funny') || traits.includes('Witty')) {
-                dialogue = `"Arey wah! Itna joke marne ki zaroorat nahi hai. Waise, funny toh tha!"`;
-            } else if (traits.includes('Serious') || traits.includes('Not Funny')) {
-                dialogue = `"Mujhe mazak bilkul pasand nahi hai. Point par aao."`;
-            } else if (traits.includes('Sarcastic')) {
-                dialogue = `"Kamaal kar diya tumne! Kya awards milna chahiye is baat par?"`;
-            } else {
-                dialogue = `"Achha? Aur aage kya kehna chahte ho?"`;
-            }
-
-            return `${narration}\n\nCharacter: ${dialogue}`;
+        function saveCurrentStoryLocallySilently() {
+            if (!activeStory) return;
+            const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
+            savedData[activeStory.id] = { history: chatHistories[activeStory.id] };
+            localStorage.setItem('roleplay_saved_stories', JSON.stringify(savedData));
         }
 
         function saveCurrentStoryLocally() {
-            if (!activeStory) return;
+            saveCurrentStoryLocallySilently();
+            showToast("Saved Current Progress!");
+        }
 
+        /* NEW FUNCTION: SAVE ALL ACTIVE CHATS TO LOCALSTORAGE */
+        function saveAllActiveChatsToLocalStorage() {
             const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
-            savedData[activeStory.id] = {
-                history: chatHistories[activeStory.id],
-                traits: characterTraits,
-                timestamp: Date.now()
-            };
+            
+            Object.keys(chatHistories).forEach(id => {
+                savedData[id] = { history: chatHistories[id] };
+            });
 
             localStorage.setItem('roleplay_saved_stories', JSON.stringify(savedData));
-            renderStories();
-
-            const toast = document.getElementById('toastMsg');
-            toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 2500);
+            showToast("All Active Chats Saved!");
+            renderChatsInbox();
+            renderContinueChatScroll();
         }
 
-        function loadSavedStoriesFromStorage() {
-            const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
-            Object.keys(savedData).forEach(id => {
-                chatHistories[id] = savedData[id].history;
-            });
-        }
+        document.getElementById('userInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
 
-        document.getElementById('userInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
-
-        /* Config Functions */
-        function openPersonalityModal() {
-            document.getElementById('personalityModal').style.display = 'flex';
-        }
-
-        function savePersonality() {
-            const traits = [];
-            if (document.getElementById('traitNormal').checked) traits.push('Normal');
-            if (document.getElementById('traitVeryFunny').checked) traits.push('Very Funny');
-            if (document.getElementById('traitWitty').checked) traits.push('Witty');
-            if (document.getElementById('traitSerious').checked) traits.push('Serious');
-            if (document.getElementById('traitNotFunny').checked) traits.push('Not Funny');
-            if (document.getElementById('traitSarcastic').checked) traits.push('Sarcastic');
-            if (document.getElementById('traitIntrovert').checked) traits.push('Introvert');
-            if (document.getElementById('traitExtrovert').checked) traits.push('Extrovert');
-            if (document.getElementById('traitRude').checked) traits.push('Rude');
-            if (document.getElementById('traitPolite').checked) traits.push('Polite');
-
-            characterTraits.selectedTraits = traits;
-            characterTraits.emotion = document.getElementById('levelEmotion').value;
-            characterTraits.anger = document.getElementById('levelAnger').value;
-            characterTraits.iq = document.getElementById('levelIQ').value;
-            characterTraits.charClass = document.getElementById('charMoneyClass').value;
-            characterTraits.userClass = document.getElementById('userMoneyClass').value;
-
-            closeModal('personalityModal');
-        }
-
-        /* ADMIN PORTAL: EDIT, DELETE & PUBLISH LOGIC */
-        function openAdminLogin() {
-            document.getElementById('loginModal').style.display = 'flex';
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
-        }
+        /* Admin Functions */
+        function openAdminLogin() { document.getElementById('loginModal').style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
         function handleLogin() {
             const u = document.getElementById('adminUser').value;
             const p = document.getElementById('adminPass').value;
-
             if (u === 'MdYeasinAlam' && p === '25801@Yeasin') {
                 closeModal('loginModal');
-                document.getElementById('adminUser').value = '';
-                document.getElementById('adminPass').value = '';
                 openAdminDashboard();
             } else {
-                alert('Invalid Admin Username or Password!');
+                alert('Invalid Admin Credentials!');
             }
         }
 
         function openAdminDashboard() {
-            renderAdminDashboard();
-            document.getElementById('adminDashboardModal').style.display = 'flex';
-        }
-
-        function renderAdminDashboard() {
             const container = document.getElementById('adminStoryList');
             container.innerHTML = '';
-
-            stories.forEach(story => {
+            stories.slice(0, 40).forEach(story => {
                 const row = document.createElement('div');
-                row.className = 'admin-item-row';
+                row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:8px; background:#0b0f17; border-radius:8px; border:1px solid #1e293b;';
                 row.innerHTML = `
                     <div>
-                        <strong>${story.title}</strong>
-                        <div style="font-size:0.75rem; color:var(--text-sub);">${story.category} • ${story.tagline}</div>
+                        <strong style="font-size:0.85rem;">${story.title}</strong>
+                        <div style="font-size:0.7rem; color:#94a3b8;">${story.category}</div>
                     </div>
-                    <div style="display:flex; gap:6px;">
-                        <button class="btn-pri" style="padding:4px 10px; font-size:0.75rem;" onclick="openEditForm('${story.id}')">Edit</button>
-                        <button class="btn-danger" style="padding:4px 10px; font-size:0.75rem;" onclick="deleteStoryFromAdmin('${story.id}')">Remove</button>
+                    <div style="display:flex; gap:4px;">
+                        <button class="btn-pri" style="padding:4px 8px; font-size:0.7rem;" onclick="openEditForm('${story.id}')">Edit</button>
+                        <button class="btn-danger" style="padding:4px 8px; font-size:0.7rem;" onclick="deleteStoryFromAdmin('${story.id}')">Remove</button>
                     </div>
                 `;
                 container.appendChild(row);
             });
+            document.getElementById('adminDashboardModal').style.display = 'flex';
         }
 
         function openPublishForm() {
             document.getElementById('editModalTitle').innerText = 'Publish New Story';
             document.getElementById('editStoryId').value = '';
             document.getElementById('editTitle').value = '';
-            document.getElementById('editTagline').value = '';
-            document.getElementById('editCategory').value = 'Campus';
-            document.getElementById('editColor1').value = '#9333ea';
-            document.getElementById('editColor2').value = '#db2777';
+            document.getElementById('editPrompt').value = '';
             document.getElementById('editIntro').value = '';
-
             document.getElementById('adminEditModal').style.display = 'flex';
         }
 
         function openEditForm(id) {
             const story = stories.find(s => s.id === id);
             if (!story) return;
-
             document.getElementById('editModalTitle').innerText = 'Edit Story: ' + story.title;
             document.getElementById('editStoryId').value = story.id;
             document.getElementById('editTitle').value = story.title;
-            document.getElementById('editTagline').value = story.tagline || '';
             document.getElementById('editCategory').value = story.category;
-            document.getElementById('editColor1').value = story.bgGrad[0] || '#9333ea';
-            document.getElementById('editColor2').value = story.bgGrad[1] || '#db2777';
+            document.getElementById('editPrompt').value = story.prompt || '';
             document.getElementById('editIntro').value = story.intro;
-
             document.getElementById('adminEditModal').style.display = 'flex';
         }
 
         function saveStoryFromAdmin() {
             const id = document.getElementById('editStoryId').value;
             const title = document.getElementById('editTitle').value.trim();
-            const tagline = document.getElementById('editTagline').value.trim() || 'Roleplay Adventure';
             const cat = document.getElementById('editCategory').value;
-            const c1 = document.getElementById('editColor1').value;
-            const c2 = document.getElementById('editColor2').value;
+            const prompt = document.getElementById('editPrompt').value.trim() || title;
             const intro = document.getElementById('editIntro').value.trim();
 
-            if (!title || !intro) return alert('Please enter Title and Description Intro');
+            if (!title || !intro) return alert('Please fill required fields');
+
+            const seed = Math.floor(Math.random() * 1000);
+            const imgUrl = generatePollinationsUrl(prompt, seed);
+            const isMature = (cat === 'Mature');
 
             if (id) {
-                // Edit existing story
                 const index = stories.findIndex(s => s.id === id);
                 if (index !== -1) {
                     stories[index].title = title;
-                    stories[index].tagline = tagline;
                     stories[index].category = cat;
-                    stories[index].bgGrad = [c1, c2];
+                    stories[index].prompt = prompt;
+                    stories[index].img = imgUrl;
                     stories[index].intro = intro;
+                    stories[index].mature = isMature;
                 }
             } else {
-                // Publish new story
-                const newStory = {
-                    id: Date.now().toString(),
-                    title: title,
-                    tagline: tagline,
-                    category: cat,
-                    popular: false,
-                    bgGrad: [c1, c2],
-                    intro: intro
-                };
-                stories.unshift(newStory);
+                stories.unshift({ id: Date.now().toString(), title, category: cat, prompt, img: imgUrl, intro, popular: false, mature: isMature, seed });
             }
 
             localStorage.setItem('roleplay_admin_stories', JSON.stringify(stories));
-
             closeModal('adminEditModal');
-            renderAdminDashboard();
-            renderStories();
-
-            if (activeStory && activeStory.id === id) {
-                selectStory(id);
-            }
+            openAdminDashboard();
+            renderHomeGrid();
         }
 
         function deleteStoryFromAdmin(id) {
             if (!confirm('Are you sure you want to remove this story?')) return;
-
             stories = stories.filter(s => s.id !== id);
             localStorage.setItem('roleplay_admin_stories', JSON.stringify(stories));
-
-            renderAdminDashboard();
-            renderStories();
-
-            if (activeStory && activeStory.id === id) {
-                activeStory = null;
-                document.getElementById('currentStoryTitle').innerText = 'Select a Story';
-                document.getElementById('userInput').disabled = true;
-                document.getElementById('sendBtn').disabled = true;
-            }
+            openAdminDashboard();
+            renderHomeGrid();
         }
     </script>
 </body>
