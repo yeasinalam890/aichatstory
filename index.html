@@ -779,7 +779,17 @@
         function buildFull200StoryCatalog() {
             const categories = ['Romance', 'Drama', 'English', 'Crime', 'Sci-Fi', 'Mature'];
             const catalog = [
-                { id: '1', title: 'Campus Ke Dil Ki Dhadkan', category: 'Romance', popular: true, mature: false, prompt: 'gorgeous indian college student girl standing in library holding notebook', seed: 101, intro: '*Library mein tumhare aage Aisha khadi hai aur tum se galti se takra gaye ho, jis wajah se uski mehangi kitabein neeche gir gayi.*\n\nAisha: "Dikhta nahi hai kya? Gawaar kahin ke! Excuse me? Tumne meri books girayi aur ab mujhe hi dekh rahe ho?"' },
+                { 
+                    id: '1', 
+                    title: 'Campus Ke Dil Ki Dhadkan', 
+                    category: 'Romance', 
+                    popular: true, 
+                    mature: false, 
+                    prompt: 'gorgeous indian college student girl standing in library holding notebook', 
+                    img: 'https://res.cloudinary.com/j4pemfe9/image/upload/v1786111837/9424240d-c831-4e39-8795-58393e84f9d6-1_all_5777_dm2bku.png',
+                    seed: 101, 
+                    intro: '*Library mein tumhare aage Aisha khadi hai aur tum se galti se takra gaye ho, jis wajah se uski mehangi kitabein neeche gir gayi.*\n\nAisha: "Dikhta nahi hai kya? Gawaar kahin ke! Excuse me? Tumne meri books girayi aur ab mujhe hi dekh rahe ho?"' 
+                },
                 { id: '2', title: 'CEO & Assistant: Office Contract', category: 'Romance', popular: true, mature: false, prompt: 'striking elegant female corporate assistant sitting at glass executive desk', seed: 202, intro: '*The CEO pushes the contract paper across the glass desk.*\n\nCEO: "Sign this agreement, and your career is made. But there is one strictly personal condition..."' },
                 { id: '3', title: 'The Billionaire\'s Secret Bride', category: 'English', popular: true, mature: false, prompt: 'stunning bride in fitted white silk dress standing in marble estate foyer', seed: 303, intro: '*You stand in front of the grand mansion gates as Mr. Harrison steps out of his luxury car.*\n\nHarrison: "Welcome to your new life. Remember, this marriage remains behind closed doors."' },
                 { id: '4', title: 'Priya: Bad Husband', category: 'Mature', popular: true, mature: true, prompt: 'sensual young woman sitting on silk sheets in dim bedroom with neon crimson lighting', seed: 404, intro: '*Priya sits quietly in the dimly lit room as you enter late at night.*\n\nPriya: "It is 2 AM. Are you going to tell me where you were, or should I pack my bags?"' },
@@ -821,6 +831,11 @@
         let chatHistories = {};
 
         window.onload = () => {
+            const savedAdminStories = localStorage.getItem('roleplay_admin_stories');
+            if (savedAdminStories) {
+                stories = JSON.parse(savedAdminStories);
+            }
+
             loadSavedHistories();
             initHeroBanner();
             renderContinueChatScroll();
@@ -1162,7 +1177,7 @@
             const file = fileInput.files[0];
             if (!file) return;
 
-            showToast("Uploading to Cloud...");
+            showToast("Uploading to Cloudinary...");
 
             const formData = new FormData();
             formData.append('file', file);
