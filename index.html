@@ -339,7 +339,19 @@
             justify-content: space-between;
         }
 
-        .chat-header-profile { display: flex; align-items: center; gap: 8px; overflow: hidden; }
+        .chat-header-profile { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            overflow: hidden; 
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .chat-header-profile:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
 
         .btn-back {
             background: var(--card-bg);
@@ -361,7 +373,7 @@
         }
 
         .chat-header-titles h3 { font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
-        .chat-header-titles p { font-size: 0.65rem; color: var(--text-secondary); }
+        .chat-header-titles p { font-size: 0.65rem; color: #c084fc; font-weight: 600; }
 
         .chat-actions { display: flex; gap: 4px; }
 
@@ -610,16 +622,20 @@
             </div>
         </div>
 
+        <!-- CHAT VIEW WINDOW WITH TAP-TO-MANAGE TITLE HEADLINE -->
         <div class="chat-window-view" id="chatWindowView">
             <div class="chat-view-header">
-                <div class="chat-header-profile">
-                    <button class="btn-back" onclick="closeChatWindow()">← Back</button>
+                <button class="btn-back" onclick="closeChatWindow()">← Back</button>
+                
+                <!-- CLICK TITLE / AVATAR TO OPEN IN-CHAT TRAIT MANAGER -->
+                <div class="chat-header-profile" onclick="openInChatManagerModal()" title="Tap to customize character personality, IQ, money & story">
                     <img id="chatHeaderAvatar" class="chat-avatar-mini" src="" alt="" onerror="this.src='https://image.pollinations.ai/prompt/portrait?width=400&height=550&nologo=true'">
                     <div class="chat-header-titles">
                         <h3 id="chatHeaderTitle">Story Title</h3>
-                        <p id="chatHeaderSub">Interactive Roleplay World</p>
+                        <p id="chatHeaderSub">⚙ Tap to Customize Persona</p>
                     </div>
                 </div>
+
                 <div class="chat-actions">
                     <button class="chat-btn chat-btn-undo" onclick="undoLastChatTurn()">↩ Undo</button>
                     <button class="chat-btn chat-btn-fav" id="chatFavBtn" onclick="toggleFavoriteCurrentStory()">❤️ Fav</button>
@@ -641,12 +657,76 @@
                 <span>Home</span>
             </div>
             <div class="nav-item" id="tabSearch" onclick="switchTab('Search')">
-                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 14z"/></svg>
                 <span>Search</span>
             </div>
             <div class="nav-item" id="tabChats" onclick="switchTab('Chats')">
                 <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
                 <span>Chats</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- IN-CHAT PERSONA & STORY CUSTOMIZER MODAL -->
+    <div class="modal" id="inChatManagerModal">
+        <div class="modal-content">
+            <h3>⚙ Character & Story Traits</h3>
+            <p style="font-size:0.75rem; color:var(--text-secondary);">Fine-tune character behavior, IQ, social class, and story start instructions live for this conversation!</p>
+
+            <div>
+                <label>1. Personality & Emotional Style:</label>
+                <input type="text" id="mgrEmotion" placeholder="e.g. Feisty, arrogant, secretly caring, jealous">
+            </div>
+
+            <div>
+                <label>2. Social Status / Money Class:</label>
+                <input type="text" id="mgrClass" placeholder="e.g. Ultra Wealthy Heir, Middle Class Student, Royalty">
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <div>
+                    <label>3. IQ Level:</label>
+                    <select id="mgrIq">
+                        <option value="Street Smart & Clever">Street Smart</option>
+                        <option value="Genius / High IQ" selected>Genius / High IQ</option>
+                        <option value="Average Intelligence">Average IQ</option>
+                        <option value="Naive & Innocent">Naive / Innocent</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>4. Social Orientation:</label>
+                    <select id="mgrSocial">
+                        <option value="Extrovert & Outgoing">Extrovert</option>
+                        <option value="Introvert & Shy" selected>Introvert</option>
+                        <option value="Ambivert">Ambivert</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label>5. Humor & Banter Tone:</label>
+                <select id="mgrHumor">
+                    <option value="Funny & Witty Banter">Funny & Witty</option>
+                    <option value="Sarcastic & Teasing">Sarcastic & Teasing</option>
+                    <option value="Serious & Strict" selected>Serious & Direct</option>
+                    <option value="Not Funny / Dry Emotional">Not Funny / Serious</option>
+                </select>
+            </div>
+
+            <div>
+                <label>6. Detailed Character Role & Age:</label>
+                <input type="text" id="mgrRole" placeholder="e.g. 20-year-old popular college student">
+            </div>
+
+            <div>
+                <label>7. Full Story Context & How to Start:</label>
+                <textarea id="mgrIntro" rows="3" placeholder="Explain full plot background and how the character should start & continue scenes..."></textarea>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-sec" onclick="closeModal('inChatManagerModal')">Cancel</button>
+                <button class="btn-pri" onclick="saveInChatManagerTraits()">Save Character</button>
             </div>
         </div>
     </div>
@@ -720,7 +800,7 @@
         </div>
     </div>
 
-    <!-- ADMIN EDIT / PUBLISH MODAL WITH DETAILED CHARACTER EDITING -->
+    <!-- ADMIN EDIT / PUBLISH MODAL -->
     <div class="modal" id="adminEditModal">
         <div class="modal-content">
             <h3 id="editModalTitle">Publish Story</h3>
@@ -744,7 +824,6 @@
                 </select>
             </div>
 
-            <!-- DETAILED PERSON & CHARACTER EMOTIONS / CLASS SETTINGS -->
             <div style="border: 1px solid var(--accent-purple); padding: 10px; border-radius: 8px; display:flex; flex-direction:column; gap:8px; background:rgba(147, 51, 234, 0.05);">
                 <label style="color:#c084fc; font-size:0.85rem;">🎭 Character Traits & Personality Settings:</label>
 
@@ -831,16 +910,19 @@
                     mature: false, 
                     emotion: 'Feisty, attitude-filled, arrogant at first but soft inside',
                     moneyClass: 'Upper Middle Class College Student',
+                    iq: 'Genius / High IQ',
+                    social: 'Introvert & Shy',
+                    humor: 'Serious & Direct',
                     role: '20-year-old popular college student (Aisha)',
                     prompt: 'gorgeous indian college student girl standing in library holding notebook', 
                     img: 'https://res.cloudinary.com/j4pemfe9/image/upload/v1786111837/9424240d-c831-4e39-8795-58393e84f9d6-1_all_5777_dm2bku.png',
                     seed: 101, 
                     intro: '*Library mein tumhare aage Aisha khadi hai aur tum se galti se takra gaye ho, jis wajah se uski mehangi kitabein neeche gir gayi.*\n\nAisha: "Dikhta nahi hai kya? Gawaar kahin ke! Excuse me? Tumne meri books girayi aur ab mujhe hi dekh rahe ho?"' 
                 },
-                { id: '2', title: 'CEO & Assistant: Office Contract', category: 'Romance', popular: true, mature: false, emotion: 'Strict, demanding, sophisticated', moneyClass: 'Ultra Wealthy Multi-Billionaire', role: '30-year-old Corporate CEO', prompt: 'striking elegant female corporate assistant sitting at glass executive desk', seed: 202, intro: '*The CEO pushes the contract paper across the glass desk.*\n\nCEO: "Sign this agreement, and your career is made. But there is one strictly personal condition..."' },
-                { id: '3', title: 'The Billionaire\'s Secret Bride', category: 'English', popular: true, mature: false, emotion: 'Reserved, mysterious, possessive', moneyClass: 'Wealthy Elite Aristocrat', role: '28-year-old Heir', prompt: 'stunning bride in fitted white silk dress standing in marble estate foyer', seed: 303, intro: '*You stand in front of the grand mansion gates as Mr. Harrison steps out of his luxury car.*\n\nHarrison: "Welcome to your new life. Remember, this marriage remains behind closed doors."' },
-                { id: '4', title: 'Priya: Bad Husband', category: 'Mature', popular: true, mature: true, emotion: 'Emotional, frustrated, romantic, hurt', moneyClass: 'Middle Class Housewife', role: '24-year-old devoted wife', prompt: 'sensual young woman sitting on silk sheets in dim bedroom with neon crimson lighting', seed: 404, intro: '*Priya sits quietly in the dimly lit room as you enter late at night.*\n\nPriya: "It is 2 AM. Are you going to tell me where you were, or should I pack my bags?"' },
-                { id: '5', title: 'Mafia Boss: Duniya Ka Don', category: 'Crime', popular: true, mature: false, emotion: 'Cold, dominant, protective, dangerous', moneyClass: 'Underworld Elite Billionaire', role: '32-year-old Syndicate Crime Boss', prompt: 'handsome dark-suited mafia leader sitting inside luxury leather car interior', seed: 505, intro: '*The armored convoy stops outside the fortress as the Don looks at you.*\n\nBoss: "Welcome to my empire. Make one mistake, and you are finished."' }
+                { id: '2', title: 'CEO & Assistant: Office Contract', category: 'Romance', popular: true, mature: false, emotion: 'Strict, demanding, sophisticated', moneyClass: 'Ultra Wealthy Multi-Billionaire', iq: 'Genius / High IQ', social: 'Extrovert & Outgoing', humor: 'Sarcastic & Teasing', role: '30-year-old Corporate CEO', prompt: 'striking elegant female corporate assistant sitting at glass executive desk', seed: 202, intro: '*The CEO pushes the contract paper across the glass desk.*\n\nCEO: "Sign this agreement, and your career is made. But there is one strictly personal condition..."' },
+                { id: '3', title: 'The Billionaire\'s Secret Bride', category: 'English', popular: true, mature: false, emotion: 'Reserved, mysterious, possessive', moneyClass: 'Wealthy Elite Aristocrat', iq: 'Genius / High IQ', social: 'Introvert & Shy', humor: 'Serious & Direct', role: '28-year-old Heir', prompt: 'stunning bride in fitted white silk dress standing in marble estate foyer', seed: 303, intro: '*You stand in front of the grand mansion gates as Mr. Harrison steps out of his luxury car.*\n\nHarrison: "Welcome to your new life. Remember, this marriage remains behind closed doors."' },
+                { id: '4', title: 'Priya: Bad Husband', category: 'Mature', popular: true, mature: true, emotion: 'Emotional, frustrated, romantic, hurt', moneyClass: 'Middle Class Housewife', iq: 'Average Intelligence', social: 'Introvert & Shy', humor: 'Not Funny / Serious', role: '24-year-old devoted wife', prompt: 'sensual young woman sitting on silk sheets in dim bedroom with neon crimson lighting', seed: 404, intro: '*Priya sits quietly in the dimly lit room as you enter late at night.*\n\nPriya: "It is 2 AM. Are you going to tell me where you were, or should I pack my bags?"' },
+                { id: '5', title: 'Mafia Boss: Duniya Ka Don', category: 'Crime', popular: true, mature: false, emotion: 'Cold, dominant, protective, dangerous', moneyClass: 'Underworld Elite Billionaire', iq: 'Street Smart & Clever', social: 'Ambivert', humor: 'Serious & Direct', role: '32-year-old Syndicate Crime Boss', prompt: 'handsome dark-suited mafia leader sitting inside luxury leather car interior', seed: 505, intro: '*The armored convoy stops outside the fortress as the Don looks at you.*\n\nBoss: "Welcome to my empire. Make one mistake, and you are finished."' }
             ];
 
             const adjectives = ['Secret', 'Forbidden', 'Seductive', 'Dangerous', 'Midnight', 'Obsessive', 'Silent', 'Intimate', 'Lethal', 'Passionate', 'Velvet', 'Shadow', 'Crimson'];
@@ -863,6 +945,9 @@
                     mature: isMature,
                     emotion: 'Dramatic, intense, charismatic',
                     moneyClass: 'Upper Class',
+                    iq: 'Average Intelligence',
+                    social: 'Ambivert',
+                    humor: 'Funny & Witty Banter',
                     role: 'Main Lead',
                     prompt: prompt,
                     seed: count * 43,
@@ -1105,7 +1190,7 @@
             const imgUrl = activeStory.img || generatePollinationsUrl(activeStory.prompt, activeStory.title, activeStory.category, activeStory.seed);
             document.getElementById('chatHeaderAvatar').src = imgUrl;
             document.getElementById('chatHeaderTitle').innerText = activeStory.title;
-            document.getElementById('chatHeaderSub').innerText = activeStory.category + ' • Roleplay World (' + appLanguage + ')';
+            document.getElementById('chatHeaderSub').innerText = '⚙ Tap to Manage Traits (' + appLanguage + ')';
 
             updateChatFavBtn();
             renderChatConversation();
@@ -1117,6 +1202,43 @@
             document.getElementById('chatWindowView').classList.remove('active');
             renderContinueChatScroll();
             renderChatsInbox();
+        }
+
+        // OPEN IN-CHAT PERSONALITY & STORY MANAGER
+        function openInChatManagerModal() {
+            if (!activeStory) return;
+
+            document.getElementById('mgrEmotion').value = activeStory.emotion || '';
+            document.getElementById('mgrClass').value = activeStory.moneyClass || '';
+            document.getElementById('mgrIq').value = activeStory.iq || 'Genius / High IQ';
+            document.getElementById('mgrSocial').value = activeStory.social || 'Introvert & Shy';
+            document.getElementById('mgrHumor').value = activeStory.humor || 'Serious & Direct';
+            document.getElementById('mgrRole').value = activeStory.role || '';
+            document.getElementById('mgrIntro').value = activeStory.intro || '';
+
+            document.getElementById('inChatManagerModal').style.display = 'flex';
+        }
+
+        function saveInChatManagerTraits() {
+            if (!activeStory) return;
+
+            activeStory.emotion = document.getElementById('mgrEmotion').value.trim();
+            activeStory.moneyClass = document.getElementById('mgrClass').value.trim();
+            activeStory.iq = document.getElementById('mgrIq').value;
+            activeStory.social = document.getElementById('mgrSocial').value;
+            activeStory.humor = document.getElementById('mgrHumor').value;
+            activeStory.role = document.getElementById('mgrRole').value.trim();
+            activeStory.intro = document.getElementById('mgrIntro').value.trim();
+
+            // Save story trait changes to master store
+            const idx = stories.findIndex(s => s.id === activeStory.id);
+            if (idx !== -1) {
+                stories[idx] = activeStory;
+                localStorage.setItem('roleplay_admin_stories', JSON.stringify(stories));
+            }
+
+            closeModal('inChatManagerModal');
+            showToast("Character Traits & Story Updated!");
         }
 
         // RENDER CONVERSATION WITH TYPING INDICATOR SUPPORT
@@ -1170,7 +1292,7 @@
             showToast("Rewound 1 message!");
         }
 
-        // RELIABLE OPENAI-COMPATIBLE CHAT LOGIC (SOLVES ERROR & TIMEOUT ISSUES)
+        // RELIABLE OPENAI-COMPATIBLE CHAT LOGIC WITH DETAILED TRAIT INJECTION
         async function sendMessage() {
             const input = document.getElementById('userInput');
             const text = input.value.trim();
@@ -1206,20 +1328,23 @@
                 return;
             }
 
-            // 1. Build Persona System Prompt
-            const systemPersona = `You are roleplaying as ${activeStory.title.split(':')[0]} in the interactive story "${activeStory.title}".
-- Speak strictly in natural ${appLanguage}.
-- Role / Age: ${activeStory.role || 'Main Lead'}
-- Personality & Emotion: ${activeStory.emotion || 'Natural, dynamic'}
-- Social / Money Class: ${activeStory.moneyClass || 'Ordinary Class'}
-- Context: ${activeStory.intro}
+            // 1. Build Persona System Prompt including IQ, Social, Humor, Money Class, and Story Start instructions
+            const systemPersona = `You are roleplaying as ${activeStory.title.split(':')[0]} in the interactive story titled "${activeStory.title}".
+- Preferred Language: Speak strictly in natural ${appLanguage}.
+- Character Role & Age: ${activeStory.role || 'Main Lead'}
+- Personality & Emotional Traits: ${activeStory.emotion || 'Natural, dynamic'}
+- Social Status / Money Class: ${activeStory.moneyClass || 'Ordinary Class'}
+- IQ & Intelligence Level: ${activeStory.iq || 'Genius / High IQ'}
+- Social Behavior: ${activeStory.social || 'Introvert & Shy'}
+- Humor & Banter Style: ${activeStory.humor || 'Serious & Direct'}
+- Full Story Context & Setup: ${activeStory.intro}
 
 Rules:
-1. Stay strictly in character with authentic emotions fitting your personality.
-2. Never output raw JSON, system messages, or metadata tags like "[Language: Hinglish]".
+1. Stay strictly in character with authentic emotions matching your IQ, social status, and humor style.
+2. Never output raw JSON, system codes, or metadata tags like "[Language: Hinglish]".
 3. Keep replies brief (1 to 3 short sentences) for fast, natural conversation.`;
 
-            // 2. Short-Term Memory Context (Last 6 Messages Buffer)
+            // 2. Short-Term Memory Context Buffer
             const recentHistory = chatHistories[activeStory.id].slice(-6);
             let conversationMessages = [
                 { role: "system", content: systemPersona }
@@ -1236,9 +1361,8 @@ Rules:
             let aiReplyText = "";
 
             try {
-                // Primary Request: POST JSON to OpenAI-compatible endpoint
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 12000); // 12-second timeout
+                const timeoutId = setTimeout(() => controller.abort(), 12000);
 
                 const response = await fetch("https://text.pollinations.ai/openai", {
                     method: "POST",
@@ -1259,7 +1383,7 @@ Rules:
                     }
                 }
             } catch (e) {
-                console.log("Primary endpoint timeout/error, attempting secondary GET request...");
+                console.log("Primary endpoint timeout, attempting secondary GET request...");
             }
 
             // Secondary Fallback GET request if POST endpoint fails
@@ -1321,7 +1445,7 @@ Rules:
             appLanguage = document.getElementById('settingLanguage').value;
             localStorage.setItem('roleplay_app_language', appLanguage);
             if (activeStory) {
-                document.getElementById('chatHeaderSub').innerText = activeStory.category + ' • Roleplay World (' + appLanguage + ')';
+                document.getElementById('chatHeaderSub').innerText = '⚙ Tap to Manage Traits (' + appLanguage + ')';
             }
             showToast(`Language set to ${appLanguage}`);
         }
