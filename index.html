@@ -41,18 +41,6 @@
             transition: background 0.3s ease;
         }
 
-        body.rgb-animated-bg {
-            background: linear-gradient(-45deg, #120326, #2d0b3f, #091d36, #032b22);
-            background-size: 400% 400%;
-            animation: gradientRGB 12s ease infinite;
-        }
-
-        @keyframes gradientRGB {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
         .app-shell {
             width: 100%;
             max-width: 480px;
@@ -148,6 +136,7 @@
             color: white;
             font-weight: 700;
             font-size: 0.8rem;
+            cursor: pointer;
         }
 
         .section-title {
@@ -156,17 +145,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .btn-save-all-chats {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            border: none;
-            border-radius: 16px;
-            padding: 6px 12px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            cursor: pointer;
         }
 
         .horizontal-scroll {
@@ -178,35 +156,6 @@
         }
 
         .horizontal-scroll::-webkit-scrollbar { display: none; }
-
-        .continue-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            width: 70px;
-            flex-shrink: 0;
-            cursor: pointer;
-        }
-
-        .continue-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--accent-purple);
-            background-color: var(--panel-bg);
-        }
-
-        .continue-item span {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
-        }
 
         .category-scroll {
             display: flex;
@@ -270,55 +219,6 @@
             align-items: center;
         }
 
-        .badge-mini { font-size: 0.6rem; padding: 1px 4px; border-radius: 4px; font-weight: bold; }
-        .badge-pop { background: #f59e0b; color: black; }
-        .badge-18 { background: #ef4444; color: white; }
-
-        .search-input-box {
-            display: flex;
-            align-items: center;
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 8px 16px;
-            gap: 10px;
-        }
-
-        .search-input-box input {
-            background: transparent;
-            border: none;
-            outline: none;
-            color: white;
-            font-size: 0.9rem;
-            width: 100%;
-        }
-
-        .chat-inbox-list { display: flex; flex-direction: column; gap: 10px; }
-
-        .inbox-item {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            border-radius: 12px;
-            cursor: pointer;
-        }
-
-        .inbox-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--accent-purple);
-            background-color: var(--panel-bg);
-        }
-
-        .inbox-details { flex: 1; overflow: hidden; }
-        .inbox-details h4 { font-size: 0.9rem; margin-bottom: 2px; }
-        .inbox-details p { font-size: 0.75rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
         .chat-window-view {
             position: absolute;
             inset: 0;
@@ -351,32 +251,8 @@
             cursor: pointer;
         }
 
-        .chat-avatar-mini {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid var(--accent-purple);
-            background-color: var(--panel-bg);
-        }
-
-        .chat-header-titles h3 { font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+        .chat-header-titles h3 { font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
         .chat-header-titles p { font-size: 0.65rem; color: var(--text-secondary); }
-
-        .chat-actions { display: flex; gap: 4px; }
-
-        .chat-btn {
-            background: #1e293b;
-            color: white;
-            border: 1px solid var(--border-color);
-            padding: 5px 8px;
-            border-radius: 14px;
-            font-size: 0.7rem;
-            cursor: pointer;
-        }
-
-        .chat-btn-undo { background: #334155; border-color: #475569; }
-        .chat-btn-fav { background: linear-gradient(135deg, #ec4899, #db2777); border: none; }
 
         .chat-conversation-area {
             flex: 1;
@@ -394,6 +270,7 @@
             line-height: 1.4;
             font-size: 0.88rem;
             white-space: pre-wrap;
+            word-break: break-word;
         }
 
         .chat-msg.ai {
@@ -409,37 +286,6 @@
             align-self: flex-end;
             border-bottom-right-radius: 2px;
             color: white;
-        }
-
-        .chat-photo-attachment {
-            width: 100%;
-            max-width: 240px;
-            border-radius: 10px;
-            margin-top: 6px;
-            display: block;
-            border: 1px solid var(--accent-purple);
-        }
-
-        .typing-dots {
-            display: inline-flex;
-            gap: 4px;
-            align-items: center;
-        }
-
-        .typing-dot {
-            width: 6px;
-            height: 6px;
-            background: #94a3b8;
-            border-radius: 50%;
-            animation: blink 1.4s infinite ease-in-out both;
-        }
-
-        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-
-        @keyframes blink {
-            0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
-            40% { transform: scale(1); opacity: 1; }
         }
 
         .chat-input-bar {
@@ -471,40 +317,10 @@
             cursor: pointer;
         }
 
-        .bottom-nav {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
-            height: 65px;
-            padding-bottom: max(0px, env(safe-area-inset-bottom));
-            background: rgba(19, 26, 42, 0.98);
-            backdrop-filter: blur(12px);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 40;
+        .chat-input-bar button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            cursor: pointer;
-            text-decoration: none;
-            flex: 1;
-            height: 100%;
-            transition: all 0.2s ease;
-        }
-
-        .nav-item.active { color: #c084fc; font-weight: bold; }
-        .nav-item svg { width: 22px; height: 22px; fill: currentColor; }
 
         .toast-notification {
             position: absolute;
@@ -522,28 +338,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.5);
             white-space: nowrap;
         }
-
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 100; }
-        .modal-content { background: var(--panel-bg); padding: 20px; border-radius: 16px; width: 440px; max-width: 92%; max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--border-color); }
-        .modal-content label { font-size: 0.8rem; color: var(--text-secondary); font-weight: bold; display: block; margin-bottom: 2px; }
-        .modal-content select, .modal-content input[type="text"], .modal-content input[type="color"], .modal-content input[type="file"], .modal-content textarea { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: white; width: 100%; }
-        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
-        .btn-sec { background: transparent; color: var(--text-secondary); border: none; cursor: pointer; padding: 8px 16px; }
-        .btn-pri { padding: 8px 18px; background: var(--accent-purple); color: white; border: none; border-radius: 8px; cursor: pointer; }
-        .btn-danger { padding: 8px 18px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; }
-
-        .preview-thumbnail {
-            width: 100px;
-            height: 130px;
-            border-radius: 8px;
-            object-fit: cover;
-            border: 1px solid var(--accent-purple);
-            margin-top: 6px;
-            display: none;
-        }
-
-        .theme-preset-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .preset-btn { height: 36px; border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer; }
     </style>
 </head>
 <body>
@@ -552,923 +346,143 @@
         <div class="top-navbar">
             <h1>Roleplay AI</h1>
             <div class="nav-actions">
-                <button class="header-btn" onclick="openSettingsModal()">⚙ Settings</button>
-                <button class="header-btn" onclick="openAdminLogin()">🔒 Admin</button>
+                <button class="header-btn">⚙ Settings</button>
             </div>
         </div>
 
         <div class="toast-notification" id="toastBox">Saved!</div>
 
         <div class="screen-container">
+            <!-- Home Screen -->
             <div class="app-screen active" id="screenHome">
-                <div class="hero-banner" onclick="selectStory('1')">
-                    <img id="heroImg" src="" alt="" onerror="this.src='https://image.pollinations.ai/prompt/romantic%20indian%20college%20couple?width=400&height=550&nologo=true'">
+                <div class="hero-banner" onclick="openChat('Campus Ke Dil Ki Dhadkan')">
+                    <img id="heroImg" src="https://image.pollinations.ai/prompt/romantic%20indian%20college%20couple?width=400&height=550&nologo=true" alt="Hero Story">
                     <div class="hero-overlay">
                         <h2 id="heroTitle">Campus Ke Dil Ki Dhadkan</h2>
-                        <p id="heroMeta">Romance • Popular</p>
+                        <p id="heroMeta">Romance • Roleplay World (Hinglish)</p>
                         <button class="btn-start-chat">START CHAT</button>
                     </div>
                 </div>
 
-                <div class="section-title">Continue Chat</div>
-                <div class="horizontal-scroll" id="continueChatScroll">
-                    <div style="font-size: 0.8rem; color: var(--text-secondary);">No active chats yet. Pick a story below to start!</div>
-                </div>
-
-                <div class="category-scroll">
-                    <button class="chip active" onclick="filterHomeCategory('All')">All</button>
-                    <button class="chip" onclick="filterHomeCategory('Favorites')">❤️ Favorites</button>
-                    <button class="chip" onclick="filterHomeCategory('Romance')">Romance</button>
-                    <button class="chip" onclick="filterHomeCategory('Drama')">Drama</button>
-                    <button class="chip" onclick="filterHomeCategory('English')">English</button>
-                    <button class="chip" onclick="filterHomeCategory('Crime')">Crime</button>
-                    <button class="chip" onclick="filterHomeCategory('Sci-Fi')">Sci-Fi</button>
-                    <button class="chip" onclick="filterHomeCategory('Mature')">🔥 Mature 18+</button>
-                </div>
-
                 <div class="section-title">Explore Stories</div>
-                <div class="story-grid" id="homeStoryGrid"></div>
-            </div>
-
-            <div class="app-screen" id="screenSearch">
-                <div class="search-input-box">
-                    <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: var(--text-secondary);"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                    <input type="text" id="searchInput" placeholder="Search characters or topics..." oninput="handleSearchInput()">
-                </div>
-                <div class="section-title">Search Results</div>
-                <div class="story-grid" id="searchStoryGrid"></div>
-            </div>
-
-            <div class="app-screen" id="screenChats">
-                <div class="section-title">
-                    <span>Active Conversations</span>
-                    <button class="btn-save-all-chats" onclick="saveAllActiveChatsToLocalStorage()">💾 Save All</button>
-                </div>
-                <div class="chat-inbox-list" id="chatInboxList">
-                    <div style="font-size: 0.85rem; color: var(--text-secondary); padding: 10px;">No active conversations. Start chatting with any character from Home!</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="chat-window-view" id="chatWindowView">
-            <div class="chat-view-header">
-                <div class="chat-header-profile">
-                    <button class="btn-back" onclick="closeChatWindow()">← Back</button>
-                    <img id="chatHeaderAvatar" class="chat-avatar-mini" src="" alt="" onerror="this.src='https://image.pollinations.ai/prompt/portrait?width=400&height=550&nologo=true'">
-                    <div class="chat-header-titles">
-                        <h3 id="chatHeaderTitle">Story Title</h3>
-                        <p id="chatHeaderSub">Interactive Roleplay World</p>
+                <div class="story-grid" id="homeStoryGrid">
+                    <div class="grid-card" onclick="openChat('Campus Ke Dil Ki Dhadkan')">
+                        <div class="grid-poster-wrap">
+                            <img src="https://image.pollinations.ai/prompt/romantic%20indian%20college%20couple?width=400&height=550&nologo=true" alt="Story">
+                        </div>
+                        <div class="grid-info">
+                            <h4>Campus Ke Dil Ki Dhadkan</h4>
+                            <div class="grid-meta">Romance • Hinglish</div>
+                        </div>
                     </div>
                 </div>
-                <div class="chat-actions">
-                    <button class="chat-btn chat-btn-undo" onclick="undoLastChatTurn()">↩ Undo</button>
-                    <button class="chat-btn chat-btn-fav" id="chatFavBtn" onclick="toggleFavoriteCurrentStory()">❤️ Fav</button>
-                    <button class="chat-btn" onclick="saveCurrentStoryLocally()">💾 Save</button>
+            </div>
+        </div>
+
+        <!-- Chat Window Overlay -->
+        <div class="chat-window-view" id="chatWindow">
+            <div class="chat-view-header">
+                <div class="chat-header-profile">
+                    <button class="btn-back" onclick="closeChat()">← Back</button>
+                    <div class="chat-header-titles">
+                        <h3 id="chatTitle">Aisha</h3>
+                        <p>Romance • Hinglish Roleplay</p>
+                    </div>
                 </div>
             </div>
 
-            <div class="chat-conversation-area" id="chatConversationArea"></div>
+            <div class="chat-conversation-area" id="chatContainer">
+                <div class="chat-msg ai">
+                    *Library mein tumhare aage Aisha khadi hai aur tum se galti se takra gaye ho, jis wajah se uski mehangi kitabein neeche gir gayi.*<br><br>
+                    Aisha: "Dikhta nahi hai kya? Gawaar kahin ke! Excuse me? Tumne meri books girayi aur ab mujhe hi dekh rahe ho?"
+                </div>
+            </div>
 
             <div class="chat-input-bar">
-                <input type="text" id="userInput" placeholder="Type response (e.g., 'send me a pic')...">
-                <button onclick="sendMessage()">Send</button>
-            </div>
-        </div>
-
-        <div class="bottom-nav">
-            <div class="nav-item active" id="tabHome" onclick="switchTab('Home')">
-                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-                <span>Home</span>
-            </div>
-            <div class="nav-item" id="tabSearch" onclick="switchTab('Search')">
-                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                <span>Search</span>
-            </div>
-            <div class="nav-item" id="tabChats" onclick="switchTab('Chats')">
-                <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-                <span>Chats</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- SETTINGS MODAL -->
-    <div class="modal" id="settingsModal">
-        <div class="modal-content">
-            <h3>⚙ App Settings</h3>
-
-            <label>1. Preferred Chat Language:</label>
-            <select id="settingLanguage" onchange="changeAppLanguage()">
-                <optgroup label="Default Popular">
-                    <option value="Hinglish" selected>Hinglish (Hindi + English)</option>
-                    <option value="English">English</option>
-                </optgroup>
-                <optgroup label="Top Global Languages">
-                    <option value="Mandarin">Mandarin Chinese (中文)</option>
-                    <option value="Spanish">Spanish (Español)</option>
-                    <option value="Hindi">Hindi (हिंदी)</option>
-                    <option value="Arabic">Arabic (العربية)</option>
-                    <option value="Bengali">Bengali (বাংলা)</option>
-                    <option value="Portuguese">Portuguese (Português)</option>
-                    <option value="Russian">Russian (Русский)</option>
-                    <option value="Urdu">Urdu (اردو)</option>
-                </optgroup>
-            </select>
-
-            <label>2. RGB Background Color Theme:</label>
-            <div class="theme-preset-grid">
-                <button class="preset-btn" style="background:#0b0f17;" onclick="setBgTheme('#0b0f17')"></button>
-                <button class="preset-btn" style="background:#18032b;" onclick="setBgTheme('#18032b')"></button>
-                <button class="preset-btn" style="background:#031e21;" onclick="setBgTheme('#031e21')"></button>
-                <button class="preset-btn" style="background:#2b0314;" onclick="setBgTheme('#2b0314')"></button>
-            </div>
-
-            <label>Custom RGB Color Picker:</label>
-            <input type="color" id="bgColorPicker" value="#0b0f17" onchange="setBgTheme(this.value)">
-
-            <button class="btn-pri" style="margin-top:4px;" onclick="enableRGBAnimated()">🌈 Enable Animated RGB Mode</button>
-
-            <div class="modal-actions">
-                <button class="btn-sec" onclick="closeModal('settingsModal')">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Admin Login Modal -->
-    <div class="modal" id="loginModal">
-        <div class="modal-content">
-            <h3>Admin Login</h3>
-            <input type="text" id="adminUser" placeholder="Username">
-            <input type="password" id="adminPass" placeholder="Password">
-            <div class="modal-actions">
-                <button class="btn-sec" onclick="closeModal('loginModal')">Cancel</button>
-                <button class="btn-pri" onclick="handleLogin()">Login</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Admin Dashboard Modal -->
-    <div class="modal" id="adminDashboardModal">
-        <div class="modal-content">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h3>⚙ Catalog Manager</h3>
-                <button class="btn-pri" onclick="openPublishForm()">+ Publish</button>
-            </div>
-            <div id="adminStoryList" style="display:flex; flex-direction:column; gap:8px; max-height:320px; overflow-y:auto; margin-top:8px;"></div>
-            <div class="modal-actions">
-                <button class="btn-sec" onclick="closeModal('adminDashboardModal')">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ADMIN EDIT / PUBLISH MODAL WITH DETAILED CHARACTER EDITING -->
-    <div class="modal" id="adminEditModal">
-        <div class="modal-content">
-            <h3 id="editModalTitle">Publish Story</h3>
-            <input type="hidden" id="editStoryId">
-            <input type="hidden" id="editFinalImgData">
-
-            <div>
-                <label>Story Headline / Title:</label>
-                <input type="text" id="editTitle" placeholder="e.g. Campus Ke Dil Ki Dhadkan">
-            </div>
-
-            <div>
-                <label>Story Category:</label>
-                <select id="editCategory">
-                    <option value="Romance">Romance</option>
-                    <option value="Drama">Drama</option>
-                    <option value="English">English</option>
-                    <option value="Crime">Crime</option>
-                    <option value="Sci-Fi">Sci-Fi</option>
-                    <option value="Mature">Mature 18+</option>
-                </select>
-            </div>
-
-            <!-- DETAILED PERSON & CHARACTER EMOTIONS / CLASS SETTINGS -->
-            <div style="border: 1px solid var(--accent-purple); padding: 10px; border-radius: 8px; display:flex; flex-direction:column; gap:8px; background:rgba(147, 51, 234, 0.05);">
-                <label style="color:#c084fc; font-size:0.85rem;">🎭 Character Traits & Personality Settings:</label>
-
-                <div>
-                    <label>Character Personality & Emotions:</label>
-                    <input type="text" id="editEmotion" placeholder="e.g. Feisty, arrogant, secretly caring, easily embarrassed">
-                </div>
-
-                <div>
-                    <label>Money Class / Social Status:</label>
-                    <input type="text" id="editClass" placeholder="e.g. Wealthy Billionaire, Middle Class Student, Royalty">
-                </div>
-
-                <div>
-                    <label>Age & Role in Story:</label>
-                    <input type="text" id="editRole" placeholder="e.g. 20-year-old Senior Student, CEO, Secret Agent">
-                </div>
-            </div>
-
-            <div style="border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; display:flex; flex-direction:column; gap:10px; background:var(--bg-main);">
-                <label style="color:#c084fc;">Thumbnail Photo Selection:</label>
-                
-                <div>
-                    <label>Option A: Upload Image to Cloudinary (Live Worldwide)</label>
-                    <input type="file" id="editFileInput" accept="image/*" onchange="handleDeviceImageUpload()">
-                </div>
-
-                <div style="text-align:center; font-size:0.75rem; color:var(--text-secondary);">- OR -</div>
-
-                <div>
-                    <label>Option B: AI Image Prompt Generator</label>
-                    <input type="text" id="editPrompt" placeholder="e.g. gorgeous young woman, red dress, dramatic neon lighting">
-                    <button type="button" class="btn-pri" style="margin-top:6px; font-size:0.75rem; width:100%;" onclick="generateAndPreviewAiThumbnail()">✨ Generate AI Thumbnail</button>
-                </div>
-
-                <img id="editImagePreview" class="preview-thumbnail" src="" alt="Preview">
-            </div>
-
-            <div>
-                <label>Initial Scene Prompt (Description):</label>
-                <textarea id="editIntro" rows="3" placeholder="Enter starting scene story prompt..."></textarea>
-            </div>
-
-            <div class="modal-actions">
-                <button class="btn-sec" onclick="closeModal('adminEditModal')">Cancel</button>
-                <button class="btn-pri" onclick="saveStoryFromAdmin()">Publish Story</button>
+                <input type="text" id="userInput" placeholder="Type response..." onkeydown="handleKeyPress(event)">
+                <button id="sendBtn" onclick="sendChatMessage()">Send</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Connected Live Cloudinary Credentials
-        const CLOUDINARY_CLOUD_NAME = "j4pemfe9"; 
-        const CLOUDINARY_PRESET = "ml_default"; 
+        const SYSTEM_PROMPT = "You are Aisha, an arrogant college girl speaking Hinglish. Respond to the user in short roleplay format with actions and dialogue.";
+        let chatHistory = [];
 
-        const distinctPrompts = [
-            "gorgeous blonde model in velvet dress, cinematic portrait",
-            "striking brunette woman in elegant saree, moody lighting",
-            "handsome athletic man in leather jacket, street lights",
-            "glamorous fashion model in neon city light, vibrant colors",
-            "charming young college student with books, soft sunlight",
-            "mysterious dark haired woman with dramatic red lipstick, shadows",
-            "handsome billionaire in tuxedo, luxury estate background",
-            "sensual young woman sitting on bed in twilight room, red glow",
-            "seductive aesthetic portrait of gorgeous model, sharp focus"
-        ];
-
-        function generatePollinationsUrl(promptText, titleText = "", categoryText = "", seed = 0) {
-            const hash = Math.abs((titleText + categoryText).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0));
-            const subject = distinctPrompts[(hash + seed) % distinctPrompts.length];
-            const fullPrompt = `${titleText}, ${categoryText}, ${promptText}, ${subject}, highly detailed photorealistic aesthetic portrait, 8k cinematic lighting`;
-            const cleanPrompt = encodeURIComponent(fullPrompt);
-            return `https://image.pollinations.ai/prompt/${cleanPrompt}?width=400&height=550&nologo=true&seed=${hash + seed + (titleText.length * 111)}`;
+        function openChat(title) {
+            document.getElementById('chatTitle').innerText = title;
+            document.getElementById('chatWindow').classList.add('active');
         }
 
-        function buildFull200StoryCatalog() {
-            const categories = ['Romance', 'Drama', 'English', 'Crime', 'Sci-Fi', 'Mature'];
-            const catalog = [
-                { 
-                    id: '1', 
-                    title: 'Campus Ke Dil Ki Dhadkan', 
-                    category: 'Romance', 
-                    popular: true, 
-                    mature: false, 
-                    emotion: 'Feisty, attitude-filled, arrogant at first but soft inside',
-                    moneyClass: 'Upper Middle Class College Student',
-                    role: '20-year-old popular college student (Aisha)',
-                    prompt: 'gorgeous indian college student girl standing in library holding notebook', 
-                    img: 'https://res.cloudinary.com/j4pemfe9/image/upload/v1786111837/9424240d-c831-4e39-8795-58393e84f9d6-1_all_5777_dm2bku.png',
-                    seed: 101, 
-                    intro: '*Library mein tumhare aage Aisha khadi hai aur tum se galti se takra gaye ho, jis wajah se uski mehangi kitabein neeche gir gayi.*\n\nAisha: "Dikhta nahi hai kya? Gawaar kahin ke! Excuse me? Tumne meri books girayi aur ab mujhe hi dekh rahe ho?"' 
-                },
-                { id: '2', title: 'CEO & Assistant: Office Contract', category: 'Romance', popular: true, mature: false, emotion: 'Strict, demanding, sophisticated', moneyClass: 'Ultra Wealthy Multi-Billionaire', role: '30-year-old Corporate CEO', prompt: 'striking elegant female corporate assistant sitting at glass executive desk', seed: 202, intro: '*The CEO pushes the contract paper across the glass desk.*\n\nCEO: "Sign this agreement, and your career is made. But there is one strictly personal condition..."' },
-                { id: '3', title: 'The Billionaire\'s Secret Bride', category: 'English', popular: true, mature: false, emotion: 'Reserved, mysterious, possessive', moneyClass: 'Wealthy Elite Aristocrat', role: '28-year-old Heir', prompt: 'stunning bride in fitted white silk dress standing in marble estate foyer', seed: 303, intro: '*You stand in front of the grand mansion gates as Mr. Harrison steps out of his luxury car.*\n\nHarrison: "Welcome to your new life. Remember, this marriage remains behind closed doors."' },
-                { id: '4', title: 'Priya: Bad Husband', category: 'Mature', popular: true, mature: true, emotion: 'Emotional, frustrated, romantic, hurt', moneyClass: 'Middle Class Housewife', role: '24-year-old devoted wife', prompt: 'sensual young woman sitting on silk sheets in dim bedroom with neon crimson lighting', seed: 404, intro: '*Priya sits quietly in the dimly lit room as you enter late at night.*\n\nPriya: "It is 2 AM. Are you going to tell me where you were, or should I pack my bags?"' },
-                { id: '5', title: 'Mafia Boss: Duniya Ka Don', category: 'Crime', popular: true, mature: false, emotion: 'Cold, dominant, protective, dangerous', moneyClass: 'Underworld Elite Billionaire', role: '32-year-old Syndicate Crime Boss', prompt: 'handsome dark-suited mafia leader sitting inside luxury leather car interior', seed: 505, intro: '*The armored convoy stops outside the fortress as the Don looks at you.*\n\nBoss: "Welcome to my empire. Make one mistake, and you are finished."' }
-            ];
-
-            const adjectives = ['Secret', 'Forbidden', 'Seductive', 'Dangerous', 'Midnight', 'Obsessive', 'Silent', 'Intimate', 'Lethal', 'Passionate', 'Velvet', 'Shadow', 'Crimson'];
-            const nouns = ['Lover', 'Marriage', 'Contract', 'Heartbreak', 'Revenge', 'Desire', 'Empire', 'Affair', 'Shadow', 'Temptation', 'Rival', 'Encounter'];
-
-            let count = catalog.length + 1;
-            while (count <= 210) {
-                const cat = categories[count % categories.length];
-                const isMature = (cat === 'Mature');
-                const adj = adjectives[(count * 7) % adjectives.length];
-                const noun = nouns[(count * 3) % nouns.length];
-                const title = `${adj} ${noun} #${count}`;
-                const prompt = `character portrait of ${adj} ${noun}, aesthetic lighting`;
-
-                catalog.push({
-                    id: count.toString(),
-                    title: title,
-                    category: cat,
-                    popular: count % 7 === 0,
-                    mature: isMature,
-                    emotion: 'Dramatic, intense, charismatic',
-                    moneyClass: 'Upper Class',
-                    role: 'Main Lead',
-                    prompt: prompt,
-                    seed: count * 43,
-                    intro: `*Welcome to ${title}. The story opens with a dramatic moment...*\n\nCharacter: "What are you going to do now?"`
-                });
-                count++;
-            }
-            return catalog;
+        function closeChat() {
+            document.getElementById('chatWindow').classList.remove('active');
         }
 
-        let stories = JSON.parse(localStorage.getItem('roleplay_admin_stories')) || buildFull200StoryCatalog();
-        let userFavorites = JSON.parse(localStorage.getItem('roleplay_favorites') || '[]');
-        let appLanguage = localStorage.getItem('roleplay_app_language') || 'Hinglish';
-        let activeHomeCategory = 'All';
-        let activeStory = null;
-        let chatHistories = {};
-
-        window.onload = () => {
-            const savedAdminStories = localStorage.getItem('roleplay_admin_stories');
-            if (savedAdminStories) {
-                stories = JSON.parse(savedAdminStories);
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') {
+                sendChatMessage();
             }
+        }
 
-            loadSavedHistories();
-            initHeroBanner();
-            renderContinueChatScroll();
-            renderHomeGrid();
+        async function sendChatMessage() {
+            const inputField = document.getElementById('userInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const userMsg = inputField.value.trim();
+
+            if (!userMsg) return;
+
+            // 1. Render User Message
+            appendMessage(userMsg, 'user');
+            inputField.value = '';
             
-            const savedBg = localStorage.getItem('roleplay_app_bg');
-            if (savedBg === 'rgb-animated') {
-                enableRGBAnimated();
-            } else if (savedBg) {
-                setBgTheme(savedBg);
-            }
-            document.getElementById('settingLanguage').value = appLanguage;
-        };
+            // Disable Inputs while processing
+            inputField.disabled = true;
+            sendBtn.disabled = true;
 
-        function showToast(msg) {
-            const box = document.getElementById('toastBox');
-            box.innerText = msg;
-            box.style.display = 'block';
-            setTimeout(() => box.style.display = 'none', 2500);
-        }
-
-        function loadSavedHistories() {
-            const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
-            Object.keys(savedData).forEach(id => {
-                chatHistories[id] = savedData[id].history;
-            });
-        }
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-
-            if (tabName === 'Home') {
-                document.getElementById('screenHome').classList.add('active');
-                document.getElementById('tabHome').classList.add('active');
-                renderContinueChatScroll();
-                renderHomeGrid();
-            } else if (tabName === 'Search') {
-                document.getElementById('screenSearch').classList.add('active');
-                document.getElementById('tabSearch').classList.add('active');
-                handleSearchInput();
-            } else if (tabName === 'Chats') {
-                document.getElementById('screenChats').classList.add('active');
-                document.getElementById('tabChats').classList.add('active');
-                renderChatsInbox();
-            }
-        }
-
-        function initHeroBanner() {
-            const featured = stories[0];
-            const imgUrl = featured.img || generatePollinationsUrl(featured.prompt, featured.title, featured.category, featured.seed);
-            document.getElementById('heroImg').src = imgUrl;
-            document.getElementById('heroTitle').innerText = featured.title;
-            document.getElementById('heroMeta').innerText = `${featured.category} • Popular`;
-        }
-
-        function filterHomeCategory(cat) {
-            activeHomeCategory = cat;
-            document.querySelectorAll('.category-scroll .chip').forEach(btn => {
-                btn.classList.toggle('active', btn.innerText.includes(cat) || (cat === 'All' && btn.innerText === 'All'));
-            });
-            renderHomeGrid();
-        }
-
-        function isFavorite(id) { return userFavorites.includes(id); }
-
-        function toggleFavoriteCurrentStory() {
-            if (!activeStory) return;
-            const idx = userFavorites.indexOf(activeStory.id);
-            if (idx === -1) userFavorites.push(activeStory.id);
-            else userFavorites.splice(idx, 1);
-            
-            localStorage.setItem('roleplay_favorites', JSON.stringify(userFavorites));
-            updateChatFavBtn();
-            renderHomeGrid();
-        }
-
-        function updateChatFavBtn() {
-            const btn = document.getElementById('chatFavBtn');
-            if (activeStory && isFavorite(activeStory.id)) {
-                btn.innerText = '❤️ Favorited';
-            } else {
-                btn.innerText = '🤍 Fav';
-            }
-        }
-
-        function renderContinueChatScroll() {
-            const container = document.getElementById('continueChatScroll');
-            const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
-            const activeIds = Object.keys(savedData);
-
-            if (activeIds.length === 0) {
-                container.innerHTML = '<div style="font-size: 0.8rem; color: var(--text-secondary);">No active chats yet. Select any story below to start!</div>';
-                return;
-            }
-
-            container.innerHTML = '';
-            activeIds.forEach(id => {
-                const story = stories.find(s => s.id === id);
-                if (!story) return;
-                const imgUrl = story.img || generatePollinationsUrl(story.prompt, story.title, story.category, story.seed);
-
-                const div = document.createElement('div');
-                div.className = 'continue-item';
-                div.onclick = () => selectStory(story.id);
-                div.innerHTML = `
-                    <img src="${imgUrl}" class="continue-avatar" alt="${story.title}" onerror="this.src='https://image.pollinations.ai/prompt/portrait?width=400&height=550&nologo=true'">
-                    <span>${story.title}</span>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function renderHomeGrid() {
-            const grid = document.getElementById('homeStoryGrid');
-            grid.innerHTML = '';
-
-            let filtered = stories;
-            if (activeHomeCategory === 'Favorites') {
-                filtered = stories.filter(s => isFavorite(s.id));
-            } else if (activeHomeCategory !== 'All') {
-                filtered = stories.filter(s => s.category === activeHomeCategory);
-            }
-
-            filtered.forEach(story => {
-                const imgUrl = story.img || generatePollinationsUrl(story.prompt, story.title, story.category, story.seed);
-                const card = document.createElement('div');
-                card.className = 'grid-card';
-                card.onclick = () => selectStory(story.id);
-                card.innerHTML = `
-                    <div class="grid-poster-wrap">
-                        <img src="${imgUrl}" alt="${story.title}" loading="lazy" onerror="this.src='https://image.pollinations.ai/prompt/portrait?width=400&height=550&nologo=true'">
-                    </div>
-                    <div class="grid-info">
-                        <h4>${story.title}</h4>
-                        <div class="grid-meta">
-                            <span>${story.category}</span>
-                            ${story.popular ? '<span class="badge-mini badge-pop">POPULAR</span>' : ''}
-                            ${story.mature ? '<span class="badge-mini badge-18">18+</span>' : ''}
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function handleSearchInput() {
-            const query = document.getElementById('searchInput').value.toLowerCase().trim();
-            const grid = document.getElementById('searchStoryGrid');
-            grid.innerHTML = '';
-
-            const results = stories.filter(s => s.title.toLowerCase().includes(query) || s.category.toLowerCase().includes(query));
-
-            results.forEach(story => {
-                const imgUrl = story.img || generatePollinationsUrl(story.prompt, story.title, story.category, story.seed);
-                const card = document.createElement('div');
-                card.className = 'grid-card';
-                card.onclick = () => selectStory(story.id);
-                card.innerHTML = `
-                    <div class="grid-poster-wrap">
-                        <img src="${imgUrl}" alt="${story.title}" loading="lazy" onerror="this.src='https://image.pollinations.ai/prompt/portrait?width=400&height=550&nologo=true'">
-                    </div>
-                    <div class="grid-info">
-                        <h4>${story.title}</h4>
-                        <div class="grid-meta">
-                            <span>${story.category}</span>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function renderChatsInbox() {
-            const container = document.getElementById('chatInboxList');
-            const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
-            const activeIds = Object.keys(savedData);
-
-            if (activeIds.length === 0) {
-                container.innerHTML = '<div style="font-size: 0.85rem; color: var(--text-secondary); padding: 10px;">No active conversations. Start chatting with any character from Home!</div>';
-                return;
-            }
-
-            container.innerHTML = '';
-            activeIds.forEach(id => {
-                const story = stories.find(s => s.id === id);
-                if (!story) return;
-                const imgUrl = story.img || generatePollinationsUrl(story.prompt, story.title, story.category, story.seed);
-                const history = savedData[id].history || [];
-                const lastMsg = history.length > 0 ? history[history.length - 1].text : story.intro;
-
-                const item = document.createElement('div');
-                item.className = 'inbox-item';
-                item.onclick = () => selectStory(story.id);
-                item.innerHTML = `
-                    <img src="${imgUrl}" class="inbox-avatar" alt="${story.title}" onerror="this.src='https://image.pollinations.ai/prompt/portrait?width=400&height=550&nologo=true'">
-                    <div class="inbox-details">
-                        <h4>${story.title}</h4>
-                        <p>${lastMsg}</p>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function selectStory(id) {
-            activeStory = stories.find(s => s.id === id);
-            if (!activeStory) return;
-
-            const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
-            if (savedData[id]) {
-                chatHistories[id] = savedData[id].history;
-            } else if (!chatHistories[id]) {
-                chatHistories[id] = [{ sender: 'ai', text: activeStory.intro }];
-            }
-
-            const imgUrl = activeStory.img || generatePollinationsUrl(activeStory.prompt, activeStory.title, activeStory.category, activeStory.seed);
-            document.getElementById('chatHeaderAvatar').src = imgUrl;
-            document.getElementById('chatHeaderTitle').innerText = activeStory.title;
-            document.getElementById('chatHeaderSub').innerText = activeStory.category + ' • Roleplay World (' + appLanguage + ')';
-
-            updateChatFavBtn();
-            renderChatConversation();
-
-            document.getElementById('chatWindowView').classList.add('active');
-        }
-
-        function closeChatWindow() {
-            document.getElementById('chatWindowView').classList.remove('active');
-            renderContinueChatScroll();
-            renderChatsInbox();
-        }
-
-        // RENDER CONVERSATION WITH ANIMATED TYPING SUPPORT
-        function renderChatConversation(isTyping = false) {
-            const area = document.getElementById('chatConversationArea');
-            area.innerHTML = '';
-
-            const history = chatHistories[activeStory.id] || [];
-            history.forEach(msg => {
-                const el = document.createElement('div');
-                el.className = `chat-msg ${msg.sender}`;
-                
-                if (msg.photoUrl) {
-                    el.innerHTML = `<div>${msg.text}</div><img src="${msg.photoUrl}" class="chat-photo-attachment" alt="AI Photo">`;
-                } else {
-                    el.innerText = msg.text;
-                }
-                
-                area.appendChild(el);
-            });
-
-            // Animated Typing Bubble
-            if (isTyping) {
-                const typingEl = document.createElement('div');
-                typingEl.className = 'chat-msg ai';
-                typingEl.innerHTML = `<div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
-                area.appendChild(typingEl);
-            }
-
-            area.scrollTop = area.scrollHeight;
-        }
-
-        function undoLastChatTurn() {
-            if (!activeStory || !chatHistories[activeStory.id]) return;
-            const history = chatHistories[activeStory.id];
-
-            if (history.length <= 1) {
-                showToast("Cannot undo initial story prompt!");
-                return;
-            }
-
-            if (history[history.length - 1].sender === 'ai') {
-                history.pop();
-            }
-
-            if (history.length > 0 && history[history.length - 1].sender === 'user') {
-                history.pop();
-            }
-
-            saveCurrentStoryLocallySilently();
-            renderChatConversation(false);
-            showToast("Rewound 1 message!");
-        }
-
-        // KAVANA-STYLE CONTEXT-AWARE MULTI-MODEL AI ROLEPLAY LOGIC
-        async function sendMessage() {
-            const input = document.getElementById('userInput');
-            const text = input.value.trim();
-            if (!text || !activeStory) return;
-
-            if (!chatHistories[activeStory.id]) {
-                chatHistories[activeStory.id] = [{ sender: 'ai', text: activeStory.intro }];
-            }
-
-            // Save user message immediately to local storage
-            chatHistories[activeStory.id].push({ sender: 'user', text: text });
-            saveCurrentStoryLocallySilently();
-            input.value = '';
-
-            renderChatConversation(true);
-
-            const lowerMsg = text.toLowerCase();
-            const photoRequested = lowerMsg.includes('pic') || lowerMsg.includes('photo') || lowerMsg.includes('image') || lowerMsg.includes('tasveer');
-
-            if (photoRequested) {
-                setTimeout(() => {
-                    const photoPrompt = `${activeStory.prompt}, seductive posture, alluring close up aesthetic portrait`;
-                    const dynamicPhotoUrl = generatePollinationsUrl(photoPrompt, activeStory.title, activeStory.category, Math.floor(Math.random() * 99999));
-                    
-                    chatHistories[activeStory.id].push({ 
-                        sender: 'ai', 
-                        text: `*Here is the photo you requested...*`, 
-                        photoUrl: dynamicPhotoUrl 
-                    });
-                    saveCurrentStoryLocallySilently();
-                    renderChatConversation(false);
-                }, 1000);
-                return;
-            }
-
-            // 1. Build Kavana-Style Persona System Prompt
-            const systemPersona = `You are roleplaying as the character ${activeStory.title.split(':')[0]} in the interactive story "${activeStory.title}".
-- Language: Speak strictly in fluent ${appLanguage}.
-- Role / Age: ${activeStory.role || 'Main Lead'}
-- Personality & Emotion: ${activeStory.emotion || 'Natural, dynamic, expressive'}
-- Social / Money Class: ${activeStory.moneyClass || 'Ordinary Class'}
-- Starting Scenario: ${activeStory.intro}
-
-Behavior Rules:
-1. Stay strictly in character at all times.
-2. Respond naturally to the user's latest input while keeping memory of recent messages.
-3. Do NOT output raw JSON, system messages, or metadata headers like "[Language: Hinglish]".
-4. Keep replies concise (1-3 sentences) for engaging roleplay.`;
-
-            // 2. Short-Term Memory Context (Last 6 Messages Buffer)
-            const recentHistory = chatHistories[activeStory.id].slice(-6);
-            let conversationContext = recentHistory.map(m => `${m.sender === 'user' ? 'User' : 'Character'}: ${m.text}`).join('\n');
-
-            const fullPrompt = `${systemPersona}\n\nRecent Conversation:\n${conversationContext}\nCharacter:`;
-
-            // 3. Multi-Model Failsafe Routing
-            const models = ['openai', 'mistral', 'qwen'];
-            let aiReplyText = "";
-
-            for (let model of models) {
-                try {
-                    const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(fullPrompt)}?model=${model}&seed=${Math.floor(Math.random() * 99999)}`);
-                    const data = await res.text();
-                    
-                    if (data && !data.startsWith('{') && !data.includes('"error"')) {
-                        aiReplyText = data.trim();
-                        break;
-                    }
-                } catch (e) {
-                    console.log(`Model ${model} failed, switching...`);
-                }
-            }
-
-            if (!aiReplyText) {
-                aiReplyText = `*Aisha frowns slightly, adjusting her books*\n\n"Aise kya dekh rahe ho? Pehle books uthane mein help karoge ya bas wahin khade rahoge?"`;
-            }
-
-            chatHistories[activeStory.id].push({ sender: 'ai', text: aiReplyText });
-            saveCurrentStoryLocallySilently();
-            renderChatConversation(false);
-        }
-
-        function saveCurrentStoryLocallySilently() {
-            if (!activeStory) return;
-            const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
-            savedData[activeStory.id] = { history: chatHistories[activeStory.id] };
-            localStorage.setItem('roleplay_saved_stories', JSON.stringify(savedData));
-        }
-
-        function saveCurrentStoryLocally() {
-            saveCurrentStoryLocallySilently();
-            showToast("Saved Current Progress!");
-        }
-
-        function saveAllActiveChatsToLocalStorage() {
-            const savedData = JSON.parse(localStorage.getItem('roleplay_saved_stories') || '{}');
-            Object.keys(chatHistories).forEach(id => {
-                savedData[id] = { history: chatHistories[id] };
-            });
-            localStorage.setItem('roleplay_saved_stories', JSON.stringify(savedData));
-            showToast("All Active Chats Saved!");
-            renderChatsInbox();
-            renderContinueChatScroll();
-        }
-
-        function openSettingsModal() { document.getElementById('settingsModal').style.display = 'flex'; }
-
-        function changeAppLanguage() {
-            appLanguage = document.getElementById('settingLanguage').value;
-            localStorage.setItem('roleplay_app_language', appLanguage);
-            if (activeStory) {
-                document.getElementById('chatHeaderSub').innerText = activeStory.category + ' • Roleplay World (' + appLanguage + ')';
-            }
-            showToast(`Language set to ${appLanguage}`);
-        }
-
-        function setBgTheme(hexColor) {
-            document.body.classList.remove('rgb-animated-bg');
-            document.body.style.backgroundColor = hexColor;
-            document.getElementById('appShell').style.backgroundColor = hexColor;
-            localStorage.setItem('roleplay_app_bg', hexColor);
-            showToast("Background Color Updated!");
-        }
-
-        function enableRGBAnimated() {
-            document.body.classList.add('rgb-animated-bg');
-            document.getElementById('appShell').style.backgroundColor = 'transparent';
-            localStorage.setItem('roleplay_app_bg', 'rgb-animated');
-            showToast("Animated RGB Mode Enabled!");
-        }
-
-        // Live Cloudinary File Upload Handler
-        async function handleDeviceImageUpload() {
-            const fileInput = document.getElementById('editFileInput');
-            const file = fileInput.files[0];
-            if (!file) return;
-
-            showToast("Uploading to Cloudinary...");
-
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', CLOUDINARY_PRESET);
+            chatHistory.push(`User: ${userMsg}`);
 
             try {
-                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
-                    method: 'POST',
-                    body: formData
-                });
-                const data = await response.json();
+                // Construct query context
+                const promptContext = `${SYSTEM_PROMPT}\nConversation:\n${chatHistory.join('\n')}\nAisha:`;
                 
-                if (data.secure_url) {
-                    document.getElementById('editFinalImgData').value = data.secure_url;
-                    const preview = document.getElementById('editImagePreview');
-                    preview.src = data.secure_url;
-                    preview.style.display = 'block';
-                    showToast("Uploaded successfully!");
-                } else {
-                    alert("Upload failed. Please try again.");
+                // Direct call to anonymous endpoint (Fixes 402 error)
+                const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(promptContext)}`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP Error Code: ${response.status}`);
                 }
-            } catch (err) {
-                alert("Upload error: " + err.message);
-            }
-        }
 
-        function generateAndPreviewAiThumbnail() {
-            const prompt = document.getElementById('editPrompt').value.trim() || 'alluring model portrait';
-            const title = document.getElementById('editTitle').value.trim() || 'Story';
-            const cat = document.getElementById('editCategory').value;
-            
-            const aiUrl = generatePollinationsUrl(prompt, title, cat, Math.floor(Math.random() * 9999));
-            document.getElementById('editFinalImgData').value = aiUrl;
-            
-            const preview = document.getElementById('editImagePreview');
-            preview.src = aiUrl;
-            preview.style.display = 'block';
-        }
+                const responseText = await response.text();
 
-        function openAdminLogin() { document.getElementById('loginModal').style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        function handleLogin() {
-            const u = document.getElementById('adminUser').value;
-            const p = document.getElementById('adminPass').value;
-            if (u === 'MdYeasinAlam' && p === '25801@Yeasin') {
-                closeModal('loginModal');
-                openAdminDashboard();
-            } else {
-                alert('Invalid Admin Credentials!');
-            }
-        }
-
-        function openAdminDashboard() {
-            const container = document.getElementById('adminStoryList');
-            container.innerHTML = '';
-            stories.slice(0, 40).forEach(story => {
-                const row = document.createElement('div');
-                row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:8px; background:#0b0f17; border-radius:8px; border:1px solid #1e293b;';
-                row.innerHTML = `
-                    <div>
-                        <strong style="font-size:0.85rem;">${story.title}</strong>
-                        <div style="font-size:0.7rem; color:#94a3b8;">${story.category} • ${story.moneyClass || 'Class Default'}</div>
-                    </div>
-                    <div style="display:flex; gap:4px;">
-                        <button class="btn-pri" style="padding:4px 8px; font-size:0.7rem;" onclick="openEditForm('${story.id}')">Edit</button>
-                        <button class="btn-danger" style="padding:4px 8px; font-size:0.7rem;" onclick="deleteStoryFromAdmin('${story.id}')">Remove</button>
-                    </div>
-                `;
-                container.appendChild(row);
-            });
-            document.getElementById('adminDashboardModal').style.display = 'flex';
-        }
-
-        function openPublishForm() {
-            document.getElementById('editModalTitle').innerText = 'Publish New Story';
-            document.getElementById('editStoryId').value = '';
-            document.getElementById('editTitle').value = '';
-            document.getElementById('editEmotion').value = '';
-            document.getElementById('editClass').value = '';
-            document.getElementById('editRole').value = '';
-            document.getElementById('editPrompt').value = '';
-            document.getElementById('editIntro').value = '';
-            document.getElementById('editFinalImgData').value = '';
-            document.getElementById('editImagePreview').style.display = 'none';
-            document.getElementById('adminEditModal').style.display = 'flex';
-        }
-
-        function openEditForm(id) {
-            const story = stories.find(s => s.id === id);
-            if (!story) return;
-            document.getElementById('editModalTitle').innerText = 'Edit Story: ' + story.title;
-            document.getElementById('editStoryId').value = story.id;
-            document.getElementById('editTitle').value = story.title;
-            document.getElementById('editCategory').value = story.category;
-            document.getElementById('editEmotion').value = story.emotion || '';
-            document.getElementById('editClass').value = story.moneyClass || '';
-            document.getElementById('editRole').value = story.role || '';
-            document.getElementById('editPrompt').value = story.prompt || '';
-            document.getElementById('editIntro').value = story.intro;
-            
-            const currentImg = story.img || generatePollinationsUrl(story.prompt, story.title, story.category, story.seed);
-            document.getElementById('editFinalImgData').value = currentImg;
-            
-            const preview = document.getElementById('editImagePreview');
-            preview.src = currentImg;
-            preview.style.display = 'block';
-
-            document.getElementById('adminEditModal').style.display = 'flex';
-        }
-
-        function saveStoryFromAdmin() {
-            const id = document.getElementById('editStoryId').value;
-            const title = document.getElementById('editTitle').value.trim();
-            const cat = document.getElementById('editCategory').value;
-            const emotion = document.getElementById('editEmotion').value.trim();
-            const moneyClass = document.getElementById('editClass').value.trim();
-            const role = document.getElementById('editRole').value.trim();
-            const prompt = document.getElementById('editPrompt').value.trim() || title;
-            const intro = document.getElementById('editIntro').value.trim();
-            let finalImg = document.getElementById('editFinalImgData').value.trim();
-
-            if (!title || !intro) return alert('Please fill required fields');
-
-            const seed = Math.floor(Math.random() * 10000);
-            if (!finalImg) {
-                finalImg = generatePollinationsUrl(prompt, title, cat, seed);
-            }
-            const isMature = (cat === 'Mature');
-
-            if (id) {
-                const index = stories.findIndex(s => s.id === id);
-                if (index !== -1) {
-                    stories[index].title = title;
-                    stories[index].category = cat;
-                    stories[index].emotion = emotion;
-                    stories[index].moneyClass = moneyClass;
-                    stories[index].role = role;
-                    stories[index].prompt = prompt;
-                    stories[index].img = finalImg;
-                    stories[index].intro = intro;
-                    stories[index].mature = isMature;
+                // Check if response is raw JSON (Error payload guard)
+                if (responseText.trim().startsWith('{') && responseText.includes('"error"')) {
+                    throw new Error("Received error JSON response from provider.");
                 }
-            } else {
-                stories.unshift({ id: Date.now().toString(), title, category: cat, emotion, moneyClass, role, prompt, img: finalImg, intro, popular: false, mature: isMature, seed });
-            }
 
-            localStorage.setItem('roleplay_admin_stories', JSON.stringify(stories));
-            closeModal('adminEditModal');
-            openAdminDashboard();
-            renderHomeGrid();
+                // 2. Render AI Response
+                appendMessage(responseText, 'ai');
+                chatHistory.push(`Aisha: ${responseText}`);
+
+            } catch (error) {
+                console.error("API Call Failed:", error);
+                
+                // In-character fallback output
+                const fallbackMessage = "*Aisha ignores your comment, picks up her books angrily, and turns away.* (System Error: Temporary connection issue)";
+                appendMessage(fallbackMessage, 'ai');
+            } finally {
+                inputField.disabled = false;
+                sendBtn.disabled = false;
+                inputField.focus();
+            }
         }
 
-        function deleteStoryFromAdmin(id) {
-            if (!confirm('Are you sure you want to remove this story?')) return;
-            stories = stories.filter(s => s.id !== id);
-            localStorage.setItem('roleplay_admin_stories', JSON.stringify(stories));
-            openAdminDashboard();
-            renderHomeGrid();
+        function appendMessage(text, type) {
+            const container = document.getElementById('chatContainer');
+            const msgBubble = document.createElement('div');
+            msgBubble.className = `chat-msg ${type}`;
+            msgBubble.innerText = text;
+            container.appendChild(msgBubble);
+            container.scrollTop = container.scrollHeight;
         }
     </script>
 </body>
