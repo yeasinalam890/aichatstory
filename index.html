@@ -339,42 +339,43 @@
             justify-content: space-between;
         }
 
-        .chat-header-profile { display: flex; align-items: center; gap: 10px; overflow: hidden; }
+        .chat-header-profile { display: flex; align-items: center; gap: 8px; overflow: hidden; }
 
         .btn-back {
             background: var(--card-bg);
             color: white;
             border: 1px solid var(--border-color);
-            padding: 6px 12px;
+            padding: 6px 10px;
             border-radius: 20px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             cursor: pointer;
         }
 
         .chat-avatar-mini {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             object-fit: cover;
             border: 1px solid var(--accent-purple);
             background-color: var(--panel-bg);
         }
 
-        .chat-header-titles h3 { font-size: 0.95rem; }
-        .chat-header-titles p { font-size: 0.7rem; color: var(--text-secondary); }
+        .chat-header-titles h3 { font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+        .chat-header-titles p { font-size: 0.65rem; color: var(--text-secondary); }
 
-        .chat-actions { display: flex; gap: 6px; }
+        .chat-actions { display: flex; gap: 4px; }
 
         .chat-btn {
             background: #1e293b;
             color: white;
             border: 1px solid var(--border-color);
-            padding: 6px 10px;
-            border-radius: 16px;
-            font-size: 0.75rem;
+            padding: 5px 8px;
+            border-radius: 14px;
+            font-size: 0.7rem;
             cursor: pointer;
         }
 
+        .chat-btn-undo { background: #334155; border-color: #475569; }
         .chat-btn-fav { background: linear-gradient(135deg, #ec4899, #db2777); border: none; }
 
         .chat-conversation-area {
@@ -598,6 +599,7 @@
                     </div>
                 </div>
                 <div class="chat-actions">
+                    <button class="chat-btn chat-btn-undo" onclick="undoLastChatTurn()">↩ Undo</button>
                     <button class="chat-btn chat-btn-fav" id="chatFavBtn" onclick="toggleFavoriteCurrentStory()">❤️ Fav</button>
                     <button class="chat-btn" onclick="saveCurrentStoryLocally()">💾 Save</button>
                 </div>
@@ -1088,6 +1090,31 @@
             });
 
             area.scrollTop = area.scrollHeight;
+        }
+
+        function undoLastChatTurn() {
+            if (!activeStory || !chatHistories[activeStory.id]) return;
+            const history = chatHistories[activeStory.id];
+
+            // Only rewind if there are user messages beyond the initial intro message
+            if (history.length <= 1) {
+                showToast("Cannot undo initial story prompt!");
+                return;
+            }
+
+            // Remove AI response if present at the end
+            if (history[history.length - 1].sender === 'ai') {
+                history.pop();
+            }
+
+            // Remove the User message
+            if (history.length > 0 && history[history.length - 1].sender === 'user') {
+                history.pop();
+            }
+
+            saveCurrentStoryLocallySilently();
+            renderChatConversation();
+            showToast("Rewound 1 message!");
         }
 
         function sendMessage() {
