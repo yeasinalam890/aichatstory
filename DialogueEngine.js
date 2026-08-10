@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const LanguageEngine = require('./LanguageEngine');
+const LanguageEngine =./LanguageEngine');
 
 class DialogueEngine {
     static async generateResponse(context) {
@@ -17,53 +17,48 @@ Scene: ${storyState?.scene || 'Campus romance'}
 
 CRITICAL INSTRUCTIONS:
 1. React uniquely and creatively to the user's latest message. NEVER repeat your previous lines or use static fallback text.
-2. Format actions in asterisks (*action*) and spoken dialogue in quotes (${charName}: "speech").
-3. Keep the conversation moving forward naturally.
+2. Format physical actions in asterisks (*action*) and spoken dialogue in quotes (${charName}: "speech").
+3. Keep the conversation moving forward naturally and emotionally.
 4. ${langInstruction}`;
 
-        // Clean and deduplicate history to prevent API looping blocks
-        const cleanHistory = [];
-        if (recentHistory && Array.isArray(recentHistory)) {
-            for (let m of recentHistory) {
-                if (m.text && m.sender) {
-                    cleanHistory.push({
-                        role: m.sender === 'user' ? 'user' : 'model',
-                        parts: [{ text: m.text }]
-                    });
-                }
-            }
-        }
-
-        const payloadContents = [
-            { role: 'user', parts: [{ text: `[SYSTEM_INSTRUCTION]\n${systemPrompt}` }] },
-            ...cleanHistory,
-            { role: 'user', parts: [{ text: userMessage }] }
+        const messages = [
+            { role: "system", content: systemPrompt },
+            ...(recentHistory || []).map(m => ({
+                role: m.sender === 'user' ? 'user' : 'assistant',
+                content: m.text
+            })),
+            { role: "user", content: userMessage }
         ];
 
-        const apiKey = process.env.GEMINI_API_KEY || process.env.REPLIT_AI_API;
-        if (!apiKey) {
-            return `*${charName} looks at you.* ${charName}: "API key is missing on backend server."`;
-        }
+        const apiKey = process.env.GROQ_API_KEY || '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';
 
         try {
-            const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey, {
+            const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ contents: payloadContents })
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: "llama3-70b-8192",
+                    messages: messages,
+                    temperature: 0.8,
+                    max_tokens: 300
+                })
             });
 
             const data = await response.json();
-            if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-                return data.candidates[0].content.parts[0].text.trim();
+            if (data.choices && data.choices[0]?.message?.content) {
+                return data.choices[0].message.content.trim();
             } else if (data.error) {
-                console.error("Gemini API Error:", data.error);
-                return `*${charName} blinks.* ${charName}: "(Error: ${data.error.message || 'API limit'})"`;
+                console.error("Groq API Error:", data.error);
+                return `*${charName} blinks.* ${charName}: "(Groq Error: ${data.error.message || 'API limit'})"`;
             }
         } catch (err) {
-            console.error("Fetch Exception:", err);
+            console.error("Groq Fetch Exception:", err);
         }
 
-        return `*${charName} shifts her weight impatiently.* ${charName}: "Agle baar dhyan se baat karna, ab bolo kya kehna hai?"`;
+        return `*${charName} looks at you closely.* ${charName}: "Tum sun bhi rahe ho ya kahin aur khoye ho?"`;
     }
 }
 
