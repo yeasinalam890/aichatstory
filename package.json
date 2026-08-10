@@ -1,5 +1,5 @@
 {
-  "name": "daryeam-ai-backend",
+  "name": "daryeam-ai",
   "version": "1.0.0",
   "description": "Secure Character/Emotion/Relationship/Story Engine Backend",
   "main": "server.js",
