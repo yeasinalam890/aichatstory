@@ -7,8 +7,8 @@ class DialogueEngine {
         const langInstruction = LanguageEngine.detectAndFormatInstruction(userMessage, languagePref);
 
         const systemPrompt = `You are an immersive, authentic AI character in a dramatic storytelling simulation.
-Character: ${character.name} \vert{} Traits:${character.traits.join(', ')}
-Emotions: Trust ${emotions.trust}, Suspicion ${emotions.suspicion}, Tension${relationship.tension}
+Character: ${character.name} | Traits: ${character.traits.join(', ')}
+Emotions: Trust ${emotions.trust}, Suspicion ${emotions.suspicion}, Tension ${relationship.tension}
 Scene: ${storyState.scene}
 
 CRITICAL ANTI-REPETITION & HUMAN DYNAMICS RULES:
