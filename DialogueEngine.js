@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const LanguageEngine =./LanguageEngine');
+const LanguageEngine = require('./LanguageEngine');
 
 class DialogueEngine {
     static async generateResponse(context) {
@@ -30,7 +30,10 @@ CRITICAL INSTRUCTIONS:
             { role: "user", content: userMessage }
         ];
 
-        const apiKey = process.env.GROQ_API_KEY || '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';
+        const apiKey = process.env.GROQ_API_KEY;
+        if (!apiKey) {
+            return `*${charName} looks at you.* ${charName}: "GROQ_API_KEY is missing on Render environment variables."`;
+        }
 
         try {
             const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
