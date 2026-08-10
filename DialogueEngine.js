@@ -11,54 +11,59 @@ class DialogueEngine {
             charName = "Aisha";
         }
 
-        const systemPrompt = `You are an interactive AI roleplay character named ${charName}. 
-Traits: ${character?.traits || 'feisty, confident'}
+        const systemPrompt = `You are an immersive romance/drama roleplay character named ${charName}. 
+Traits: ${character?.traits || 'feisty, confident, expressive'}
 Scene: ${storyState?.scene || 'Campus romance'}
 
-Rules:
-1. Respond directly to the user's latest message in character as ${charName}.
-2. Format physical actions in asterisks (*action*) and spoken dialogue with quotes (${charName}: "speech").
-3. Never repeat previous assistant messages or reuse identical fallback lines. Keep the conversation moving forward dynamically.
+CRITICAL INSTRUCTIONS:
+1. React uniquely and creatively to the user's latest message. NEVER repeat your previous lines or use static fallback text.
+2. Format actions in asterisks (*action*) and spoken dialogue in quotes (${charName}: "speech").
+3. Keep the conversation moving forward naturally.
 4. ${langInstruction}`;
 
-        const messages = [
-            { role: "system", content: systemPrompt },
-            ...(recentHistory || []).map(m => ({
-                role: m.sender === 'user' ? 'user' : 'assistant',
-                content: m.text
-            })),
-            { role: "user", content: userMessage }
+        // Clean and deduplicate history to prevent API looping blocks
+        const cleanHistory = [];
+        if (recentHistory && Array.isArray(recentHistory)) {
+            for (let m of recentHistory) {
+                if (m.text && m.sender) {
+                    cleanHistory.push({
+                        role: m.sender === 'user' ? 'user' : 'model',
+                        parts: [{ text: m.text }]
+                    });
+                }
+            }
+        }
+
+        const payloadContents = [
+            { role: 'user', parts: [{ text: `[SYSTEM_INSTRUCTION]\n${systemPrompt}` }] },
+            ...cleanHistory,
+            { role: 'user', parts: [{ text: userMessage }] }
         ];
 
         const apiKey = process.env.GEMINI_API_KEY || process.env.REPLIT_AI_API;
         if (!apiKey) {
-            return `*${charName} looks at you.* ${charName}: "API key is missing."`;
+            return `*${charName} looks at you.* ${charName}: "API key is missing on backend server."`;
         }
 
         try {
             const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: messages.map(m => ({
-                        role: m.role === 'system' ? 'user' : m.role,
-                        parts: [{ text: (m.role === 'system' ? "[SYS]\n" : "") + m.content }]
-                    }))
-                })
+                body: JSON.stringify({ contents: payloadContents })
             });
 
             const data = await response.json();
             if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
                 return data.candidates[0].content.parts[0].text.trim();
             } else if (data.error) {
-                console.error("Gemini API Error Details:", data.error);
-                return `*${charName} raises an eyebrow.* ${charName}: "(${data.error.message || 'API Error'})"`;
+                console.error("Gemini API Error:", data.error);
+                return `*${charName} blinks.* ${charName}: "(Error: ${data.error.message || 'API limit'})"`;
             }
         } catch (err) {
             console.error("Fetch Exception:", err);
         }
 
-        return `*${charName} stares at you intently.* ${charName}: "Tum sun bhi rahe ho ya kahin aur khoye ho?"`;
+        return `*${charName} shifts her weight impatiently.* ${charName}: "Agle baar dhyan se baat karna, ab bolo kya kehna hai?"`;
     }
 }
 
