@@ -1001,12 +1001,14 @@
             
             if(!chatsData[storyId]) {
                 chatsData[storyId] = [];
-                // Load pre-scene chats if configured by admin
-                if(story.preScene && story.preScene.length > 0) {
+                // Load admin custom pre-scene lines directly into chat window
+                if(story.preScene && Array.isArray(story.preScene) && story.preScene.length > 0) {
                     story.preScene.forEach(line => {
-                        chatsData[storyId].push({ sender: 'ai', text: line });
+                        if(line.trim()) {
+                            chatsData[storyId].push({ sender: 'ai', text: line.trim() });
+                        }
                     });
-                } else {
+                } else if(story.intro) {
                     chatsData[storyId].push({ sender: 'ai', text: story.intro });
                 }
                 saveChatsStorage();
@@ -1076,7 +1078,7 @@
                 }
             } catch (error) {
                 console.error('Backend connection error:', error);
-                chatsData[currentChatStoryId].push({ sender: 'ai', text: "*Pauses cautiously.* (Backend server unreachable. Make sure 'npm start' is running)" });
+                chatsData[currentChatStoryId].push({ sender: 'ai', text: "*Pauses cautiously.* (Backend server unreachable)" });
             }
 
             saveChatsStorage();
