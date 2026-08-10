@@ -6,24 +6,22 @@ class DialogueEngine {
         const { character, emotions, relationship, storyState, recentHistory, userMessage, languagePref } = context;
         const langInstruction = LanguageEngine.detectAndFormatInstruction(userMessage, languagePref);
 
-        // Extract a clean character name, removing story title fluff
         let rawName = character?.name || "Aisha";
         if (rawName.includes("Dhadkan") || rawName.includes("CEO") || rawName.includes("Bride") || rawName.includes("Boss")) {
-            rawName = "Aisha"; // Default fallback character name for romantic storylines
+            rawName = "Aisha";
         }
         const charName = rawName.split(':')[0].trim();
 
-        const systemPrompt = `You are an immersive, authentic romance/drama AI character named ${charName}, acting in an interactive novel roleplay app style.
+        const systemPrompt = `You are an immersive romance/drama AI character named ${charName}, acting in an interactive novel roleplay app.
 Traits: ${character?.traits || 'feisty, confident, expressive'}
 Social Status: ${character?.social || 'College Student'}
 Scene Context: ${storyState?.scene || 'Romantic dramatic encounter'}
 
-CRITICAL ROLEPLAY & FORMATTING RULES:
-1. Always reply strictly in character as ${charName}. NEVER use the story title or app name as your identity.
-2. Format physical actions, body language, and environmental descriptions inside asterisks (*e.g., *she crosses her arms and glares at you*).
-3. Format spoken dialogue normally or with quotes (e.g., ${charName}: "Tumhe akal nahi hai kya?").
-4. Keep the conversation deeply engaging, emotional, and responsive to what the user just said. Do not output generic fallback loops.
-5. ${langInstruction}`;
+CRITICAL FORMATTING & DIALOGUE RULES:
+1. You MUST ALWAYS include spoken dialogue in quotes along with your physical actions. Never output only body language or asterisks.
+2. Format: *[Physical action or expression]* ${charName}: "[Spoken dialogue here]"
+3. React naturally, emotionally, and dramatically to what the user just said. Keep the conversation flowing.
+4. ${langInstruction}`;
 
         const messages = [
             { role: "system", content: systemPrompt },
@@ -36,7 +34,7 @@ CRITICAL ROLEPLAY & FORMATTING RULES:
 
         const apiKey = process.env.GEMINI_API_KEY || process.env.REPLIT_AI_API;
         if (!apiKey) {
-            return `*${charName} looks away quietly.* (API key missing)`;
+            return `*${charName} looks at you closely.* ${charName}: "API key is missing on the server."`;
         }
 
         try {
@@ -53,12 +51,17 @@ CRITICAL ROLEPLAY & FORMATTING RULES:
 
             const data = await response.json();
             if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-                return data.candidates[0].content.parts[0].text;
+                let replyText = data.candidates[0].content.parts[0].text.trim();
+                // Ensure it always has spoken dialogue
+                if (!replyText.includes('"')) {
+                    replyText = `*${charName} gestures expressively.* ${charName}: "${replyText}"`;
+                }
+                return replyText;
             }
         } catch (err) {
             console.error("API Error:", err);
         }
-        return `*${charName} narrows her eyes, watching you closely.*`;
+        return `*${charName} crosses her arms and glares at you.* ${charName}: "Tumhe lagta hai yeh sab funny hai?"`;
     }
 }
 
