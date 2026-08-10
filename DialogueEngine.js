@@ -6,21 +6,19 @@ class DialogueEngine {
         const { character, emotions, relationship, storyState, recentHistory, userMessage, languagePref } = context;
         const langInstruction = LanguageEngine.detectAndFormatInstruction(userMessage, languagePref);
 
-        let rawName = character?.name || "Aisha";
-        if (rawName.includes("Dhadkan") || rawName.includes("CEO") || rawName.includes("Bride") || rawName.includes("Boss")) {
-            rawName = "Aisha";
+        let charName = character?.name || "Aisha";
+        if (charName.includes("Dhadkan") || charName.includes("CEO") || charName.includes("Bride") || charName.includes("Boss")) {
+            charName = "Aisha";
         }
-        const charName = rawName.split(':')[0].trim();
 
-        const systemPrompt = `You are an immersive romance/drama AI character named ${charName}, acting in an interactive novel roleplay app.
-Traits: ${character?.traits || 'feisty, confident, expressive'}
-Social Status: ${character?.social || 'College Student'}
-Scene Context: ${storyState?.scene || 'Romantic dramatic encounter'}
+        const systemPrompt = `You are an interactive AI roleplay character named ${charName}. 
+Traits: ${character?.traits || 'feisty, confident'}
+Scene: ${storyState?.scene || 'Campus romance'}
 
-CRITICAL FORMATTING & DIALOGUE RULES:
-1. You MUST ALWAYS include spoken dialogue in quotes along with your physical actions. Never output only body language or asterisks.
-2. Format: *[Physical action or expression]* ${charName}: "[Spoken dialogue here]"
-3. React naturally, emotionally, and dramatically to what the user just said. Keep the conversation flowing.
+Rules:
+1. Respond directly to the user's latest message in character as ${charName}.
+2. Format physical actions in asterisks (*action*) and spoken dialogue with quotes (${charName}: "speech").
+3. Never repeat previous assistant messages or reuse identical fallback lines. Keep the conversation moving forward dynamically.
 4. ${langInstruction}`;
 
         const messages = [
@@ -34,7 +32,7 @@ CRITICAL FORMATTING & DIALOGUE RULES:
 
         const apiKey = process.env.GEMINI_API_KEY || process.env.REPLIT_AI_API;
         if (!apiKey) {
-            return `*${charName} looks at you closely.* ${charName}: "API key is missing on the server."`;
+            return `*${charName} looks at you.* ${charName}: "API key is missing."`;
         }
 
         try {
@@ -51,17 +49,16 @@ CRITICAL FORMATTING & DIALOGUE RULES:
 
             const data = await response.json();
             if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-                let replyText = data.candidates[0].content.parts[0].text.trim();
-                // Ensure it always has spoken dialogue
-                if (!replyText.includes('"')) {
-                    replyText = `*${charName} gestures expressively.* ${charName}: "${replyText}"`;
-                }
-                return replyText;
+                return data.candidates[0].content.parts[0].text.trim();
+            } else if (data.error) {
+                console.error("Gemini API Error Details:", data.error);
+                return `*${charName} raises an eyebrow.* ${charName}: "(${data.error.message || 'API Error'})"`;
             }
         } catch (err) {
-            console.error("API Error:", err);
+            console.error("Fetch Exception:", err);
         }
-        return `*${charName} crosses her arms and glares at you.* ${charName}: "Tumhe lagta hai yeh sab funny hai?"`;
+
+        return `*${charName} stares at you intently.* ${charName}: "Tum sun bhi rahe ho ya kahin aur khoye ho?"`;
     }
 }
 
