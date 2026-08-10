@@ -3,19 +3,19 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 
-const CharacterEngine = require('./engines/CharacterEngine');
-const EmotionEngine = require('./engines/EmotionEngine');
-const RelationshipEngine = require('./engines/RelationshipEngine');
-const StoryEngine = require('./engines/StoryEngine');
-const MemoryEngine = require('./engines/MemoryEngine');
-const DialogueEngine = require('./engines/DialogueEngine');
-const QualityController = require('./engines/QualityController');
-const AdminEngine = require('./engines/AdminEngine');
+const CharacterEngine = require('./CharacterEngine');
+const EmotionEngine = require('./EmotionEngine');
+const RelationshipEngine = require('./RelationshipEngine');
+const StoryEngine = require('./StoryEngine');
+const MemoryEngine = require('./MemoryEngine');
+const DialogueEngine = require('./DialogueEngine');
+const QualityController = require('./QualityController');
+const AdminEngine = require('./AdminEngine');
 
 const app = express();
 app.use(express.json({ limit: '10mb' }));
 app.use(cors());
-app.use(express.static(path.join(__dirname, '../')));
+app.use(express.static(path.join(__dirname, './')));
 
 const sessions = {};
 
