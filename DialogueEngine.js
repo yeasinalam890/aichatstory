@@ -6,18 +6,23 @@ class DialogueEngine {
         const { character, emotions, relationship, storyState, recentHistory, userMessage, languagePref } = context;
         const langInstruction = LanguageEngine.detectAndFormatInstruction(userMessage, languagePref);
 
-        const charName = character?.name || "Aisha";
+        // Extract a clean character name, removing story title fluff
+        let rawName = character?.name || "Aisha";
+        if (rawName.includes("Dhadkan") || rawName.includes("CEO") || rawName.includes("Bride") || rawName.includes("Boss")) {
+            rawName = "Aisha"; // Default fallback character name for romantic storylines
+        }
+        const charName = rawName.split(':')[0].trim();
 
-        const systemPrompt = `You are an immersive, authentic romance/drama AI character named ${charName}, styled like an interactive novel app (similar to Kavana).
-Traits: ${character?.traits?.join(', ') || 'passionate, expressive, dramatic'}
-Emotions: Trust ${emotions.trust}, Suspicion ${emotions.suspicion}, Tension ${relationship.tension}
-Scene: ${storyState?.scene || 'Campus romance'}
+        const systemPrompt = `You are an immersive, authentic romance/drama AI character named ${charName}, acting in an interactive novel roleplay app style.
+Traits: ${character?.traits || 'feisty, confident, expressive'}
+Social Status: ${character?.social || 'College Student'}
+Scene Context: ${storyState?.scene || 'Romantic dramatic encounter'}
 
-CRITICAL FORMATTING & NARRATIVE RULES:
-1. Format actions, environmental descriptions, and body language inside asterisks (*like this*). Format spoken character dialogue normally or with quotes (e.g., ${charName}: "Dialogue here").
-2. Blend emotional depth, dramatic pauses, and realistic expressions.
-3. NEVER repeat previous responses or reuse identical phrasing. Keep text fresh and captivating.
-4. NEVER control the user's actions or speech. Only control ${charName} and the surrounding world.
+CRITICAL ROLEPLAY & FORMATTING RULES:
+1. Always reply strictly in character as ${charName}. NEVER use the story title or app name as your identity.
+2. Format physical actions, body language, and environmental descriptions inside asterisks (*e.g., *she crosses her arms and glares at you*).
+3. Format spoken dialogue normally or with quotes (e.g., ${charName}: "Tumhe akal nahi hai kya?").
+4. Keep the conversation deeply engaging, emotional, and responsive to what the user just said. Do not output generic fallback loops.
 5. ${langInstruction}`;
 
         const messages = [
@@ -31,7 +36,7 @@ CRITICAL FORMATTING & NARRATIVE RULES:
 
         const apiKey = process.env.GEMINI_API_KEY || process.env.REPLIT_AI_API;
         if (!apiKey) {
-            return `*${charName} looks at you with a quiet gaze.* (API key missing)`;
+            return `*${charName} looks away quietly.* (API key missing)`;
         }
 
         try {
@@ -53,7 +58,8 @@ CRITICAL FORMATTING & NARRATIVE RULES:
         } catch (err) {
             console.error("API Error:", err);
         }
-        return `*${charName} narrows her eyes thoughtfully, waiting for your reply.*`;
+        return `*${charName} narrows her eyes, watching you closely.*`;
     }
 }
+
 module.exports = DialogueEngine;
