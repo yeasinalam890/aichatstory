@@ -2,1317 +2,210 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Daryeam-ai - Interactive Story Hub</title>
-    <style>
-        :root {
-            --bg-main: #0b0f17;
-            --panel-bg: #131a2a;
-            --card-bg: #182238;
-            --accent-purple: #9333ea;
-            --accent-pink: #db2777;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --border-color: #1e293b;
-            --user-bubble: #581c87;
-            --ai-bubble: #1e293b;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        html, body {
-            height: 100%;
-            height: 100dvh;
-            width: 100%;
-            overflow: hidden;
-            background-color: var(--bg-main);
-            color: var(--text-primary);
-        }
-
-        body {
-            display: flex;
-            justify-content: center;
-            transition: background 0.3s ease;
-        }
-
-        body.rgb-animated-bg {
-            background: linear-gradient(-45deg, #120326, #2d0b3f, #091d36, #032b22);
-            background-size: 400% 400%;
-            animation: gradientRGB 12s ease infinite;
-        }
-
-        @keyframes gradientRGB {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .app-shell {
-            width: 100%;
-            max-width: 480px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            background-color: var(--bg-main);
-            position: relative;
-            box-shadow: 0 0 25px rgba(0,0,0,0.8);
-            transition: background-color 0.3s ease;
-        }
-
-        .top-navbar {
-            padding: 12px 16px;
-            background: rgba(13, 19, 34, 0.98);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 20;
-            flex-shrink: 0;
-        }
-
-        .brand-logo-area {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .app-logo-img {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid var(--accent-purple);
-            background: var(--panel-bg);
-        }
-
-        .top-navbar h1 {
-            font-size: 1.25rem;
-            font-weight: 800;
-            background: linear-gradient(to right, #c084fc, #f472b6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .nav-actions { display: flex; gap: 6px; }
-
-        .header-btn {
-            background: #1e293b;
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 6px 12px;
-            font-size: 0.75rem;
-            cursor: pointer;
-        }
-
-        .screen-container {
-            flex: 1;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .app-screen {
-            display: none;
-            padding: 14px;
-            flex-direction: column;
-            gap: 18px;
-            padding-bottom: 85px;
-        }
-
-        .app-screen.active { display: flex; }
-
-        .hero-banner {
-            width: 100%;
-            height: 220px;
-            border-radius: 16px;
-            overflow: hidden;
-            position: relative;
-            cursor: pointer;
-            border: 1px solid var(--border-color);
-            background-color: var(--panel-bg);
-        }
-
-        .hero-banner img { width: 100%; height: 100%; object-fit: cover; }
-
-        .hero-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(9, 13, 22, 0.95), transparent 60%);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 16px;
-        }
-
-        .hero-overlay h2 { font-size: 1.2rem; font-weight: 800; }
-        .hero-overlay p { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px; }
-
-        .btn-start-chat {
-            align-self: flex-start;
-            padding: 6px 16px;
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-            border: none;
-            border-radius: 20px;
-            color: white;
-            font-weight: 700;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-
-        .section-title {
-            font-size: 1rem;
-            font-weight: 700;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .btn-save-all-chats {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            border: none;
-            border-radius: 16px;
-            padding: 6px 12px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .horizontal-scroll {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            padding-bottom: 4px;
-        }
-
-        .horizontal-scroll::-webkit-scrollbar { display: none; }
-
-        .continue-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            width: 70px;
-            flex-shrink: 0;
-            cursor: pointer;
-        }
-
-        .continue-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--accent-purple);
-            background-color: var(--panel-bg);
-        }
-
-        .continue-item span {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
-        }
-
-        .category-scroll {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-
-        .category-scroll::-webkit-scrollbar { display: none; }
-
-        .chip {
-            padding: 6px 14px;
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            white-space: nowrap;
-            cursor: pointer;
-        }
-
-        .chip.active {
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-            color: white;
-            border-color: transparent;
-        }
-
-        .story-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .grid-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .grid-poster-wrap {
-            width: 100%;
-            height: 160px;
-            position: relative;
-            background: var(--panel-bg);
-        }
-
-        .grid-poster-wrap img { width: 100%; height: 100%; object-fit: cover; }
-
-        .grid-info { padding: 10px; display: flex; flex-direction: column; gap: 4px; }
-        .grid-info h4 { font-size: 0.85rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        .grid-meta {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            display: flex;
-            gap: 4px;
-            align-items: center;
-        }
-
-        .badge-mini { font-size: 0.6rem; padding: 1px 4px; border-radius: 4px; font-weight: bold; }
-        .badge-pop { background: #f59e0b; color: black; }
-        .badge-18 { background: #ef4444; color: white; }
-
-        .search-input-box {
-            display: flex;
-            align-items: center;
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 8px 16px;
-            gap: 10px;
-        }
-
-        .search-input-box input {
-            background: transparent;
-            border: none;
-            outline: none;
-            color: white;
-            font-size: 0.9rem;
-            width: 100%;
-        }
-
-        .chat-inbox-list { display: flex; flex-direction: column; gap: 10px; }
-
-        .inbox-item {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            border-radius: 12px;
-            cursor: pointer;
-        }
-
-        .inbox-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--accent-purple);
-            background-color: var(--panel-bg);
-        }
-
-        .inbox-details { flex: 1; overflow: hidden; }
-        .inbox-details h4 { font-size: 0.9rem; margin-bottom: 2px; }
-        .inbox-details p { font-size: 0.75rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        .chat-window-view {
-            position: absolute;
-            inset: 0;
-            background: var(--bg-main);
-            z-index: 50;
-            display: none;
-            flex-direction: column;
-        }
-
-        .chat-window-view.active { display: flex; }
-
-        .chat-view-header {
-            padding: 10px 14px;
-            background: var(--panel-bg);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .chat-header-profile { 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            overflow: hidden; 
-            cursor: pointer;
-            padding: 4px 6px;
-            border-radius: 8px;
-            transition: background 0.2s;
-        }
-        .chat-header-profile:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .btn-back {
-            background: var(--card-bg);
-            color: white;
-            border: 1px solid var(--border-color);
-            padding: 6px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-
-        .chat-avatar-mini {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid var(--accent-purple);
-            background-color: var(--panel-bg);
-        }
-
-        .chat-header-titles h3 { font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
-        .chat-header-titles p { font-size: 0.65rem; color: #c084fc; font-weight: 600; }
-
-        .chat-actions { display: flex; gap: 4px; }
-
-        .chat-btn {
-            background: #1e293b;
-            color: white;
-            border: 1px solid var(--border-color);
-            padding: 5px 8px;
-            border-radius: 14px;
-            font-size: 0.7rem;
-            cursor: pointer;
-        }
-
-        .chat-btn-undo { background: #334155; border-color: #475569; }
-        .chat-btn-fav { background: linear-gradient(135deg, #ec4899, #db2777); border: none; }
-
-        .chat-conversation-area {
-            flex: 1;
-            padding: 14px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .chat-msg {
-            max-width: 85%;
-            padding: 10px 14px;
-            border-radius: 14px;
-            line-height: 1.4;
-            font-size: 0.88rem;
-            white-space: pre-wrap;
-        }
-
-        .chat-msg.ai {
-            background-color: var(--ai-bubble);
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
-            border: 1px solid var(--border-color);
-            color: #e2e8f0;
-        }
-
-        .chat-msg.user {
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-            align-self: flex-end;
-            border-bottom-right-radius: 2px;
-            color: white;
-        }
-
-        .chat-input-bar {
-            padding: 10px 14px;
-            background: var(--panel-bg);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            gap: 8px;
-        }
-
-        .chat-input-bar input {
-            flex: 1;
-            padding: 10px 14px;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-main);
-            color: white;
-            outline: none;
-            font-size: 0.85rem;
-        }
-
-        .chat-input-bar button {
-            padding: 10px 18px;
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-            border: none;
-            border-radius: 20px;
-            color: white;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .bottom-nav {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
-            height: 65px;
-            padding-bottom: max(0px, env(safe-area-inset-bottom));
-            background: rgba(19, 26, 42, 0.98);
-            backdrop-filter: blur(12px);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 40;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            cursor: pointer;
-            text-decoration: none;
-            flex: 1;
-            height: 100%;
-            transition: all 0.2s ease;
-        }
-
-        .nav-item.active { color: #c084fc; font-weight: bold; }
-        .nav-item svg { width: 22px; height: 22px; fill: currentColor; }
-
-        .toast-notification {
-            position: absolute;
-            bottom: 75px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #10b981;
-            color: black;
-            font-weight: bold;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            display: none;
-            z-index: 100;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            white-space: nowrap;
-        }
-
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 100; }
-        .modal-content { background: var(--panel-bg); padding: 20px; border-radius: 16px; width: 440px; max-width: 92%; max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--border-color); }
-        .modal-content label { font-size: 0.8rem; color: var(--text-secondary); font-weight: bold; display: block; margin-bottom: 2px; }
-        .modal-content select, .modal-content input[type="text"], .modal-content input[type="password"], .modal-content input[type="color"], .modal-content input[type="file"], .modal-content textarea { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: white; width: 100%; }
-        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
-        .btn-sec { background: transparent; color: var(--text-secondary); border: none; cursor: pointer; padding: 8px 16px; }
-        .btn-pri { padding: 8px 18px; background: var(--accent-purple); color: white; border: none; border-radius: 8px; cursor: pointer; }
-        .btn-danger { padding: 8px 18px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; }
-
-        .preview-thumbnail {
-            width: 100px;
-            height: 130px;
-            border-radius: 8px;
-            object-fit: cover;
-            border: 1px solid var(--accent-purple);
-            margin-top: 6px;
-            display: none;
-        }
-
-        .theme-preset-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .preset-btn { height: 36px; border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daryeam AI - Interactive Stories</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="bg-gray-950 text-white font-sans antialiased flex flex-col h-screen overflow-hidden">
 
-    <div class="app-shell" id="appShell">
-        <div class="top-navbar">
-            <div class="brand-logo-area">
-                <h1>Daryeam-ai</h1>
-            </div>
-            <div class="nav-actions">
-                <button class="header-btn" onclick="openSettingsModal()">⚙ Settings</button>
-                <button class="header-btn" onclick="openAdminLogin()">🔒 Admin</button>
+    <!-- Top Navigation / Header -->
+    <header class="bg-gray-900 border-b border-gray-800 p-4 flex justify-between items-center z-10">
+        <h1 class="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">Daryeam AI</h1>
+        <div class="flex items-center space-x-3">
+            <button onclick="openAdminLogin()" class="text-xs bg-gray-800 hover:bg-gray-700 px-3 py-1.5 rounded-full border border-gray-700 transition">Admin</button>
+            <button onclick="openSettings()" class="text-xs bg-gray-800 hover:bg-gray-700 px-3 py-1.5 rounded-full border border-gray-700 transition">Settings</button>
+        </div>
+    </header>
+
+    <!-- Main Content App Body -->
+    <main id="app-container" class="flex-1 overflow-y-auto p-4 pb-20">
+        <!-- Home View / Story List -->
+        <div id="home-view" class="space-y-4">
+            <div class="bg-gradient-to-r from-purple-900/40 to-pink-900/40 border border-purple-800/50 p-4 rounded-2xl">
+                <h2 class="text-lg font-bold mb-1">Campus Ke Dil Ki Dhadkan ❤️🎓</h2>
+                <p class="text-xs text-gray-300 mb-3">College mein do alag duniya ke students ki pyaar bhari kahani shuru hoti hai.</p>
+                <button onclick="startStory('default')" class="bg-gradient-to-r from-pink-600 to-purple-600 hover:opacity-90 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-lg">START CHAT</button>
             </div>
         </div>
 
-        <div class="toast-notification" id="toastBox">Saved!</div>
-
-        <div class="screen-container">
-            <!-- Home Screen -->
-            <div class="app-screen active" id="screenHome">
-                <div class="hero-banner" onclick="selectStory('1')">
-                    <img id="heroImg" src="" alt="" onerror="this.src='https://image.pollinations.ai/prompt/romantic%20indian%20college%20couple?width=400&height=550&nologo=true'">
-                    <div class="hero-overlay">
-                        <h2 id="heroTitle">Campus Ke Dil Ki Dhadkan</h2>
-                        <p id="heroMeta">Romance • Popular</p>
-                        <button class="btn-start-chat" onclick="event.stopPropagation(); selectStory('1');">START CHAT</button>
-                    </div>
-                </div>
-
-                <div class="section-title">Continue Chat</div>
-                <div class="horizontal-scroll" id="continueChatScroll">
-                    <div style="font-size: 0.8rem; color: var(--text-secondary);">No active chats yet. Pick a story below to start!</div>
-                </div>
-
-                <div class="category-scroll">
-                    <button class="chip active" onclick="filterHomeCategory('All', this)">All</button>
-                    <button class="chip" onclick="filterHomeCategory('Favorites', this)">❤️ Favorites</button>
-                    <button class="chip" onclick="filterHomeCategory('Romance', this)">Romance</button>
-                    <button class="chip" onclick="filterHomeCategory('Drama', this)">Drama</button>
-                    <button class="chip" onclick="filterHomeCategory('English', this)">English</button>
-                    <button class="chip" onclick="filterHomeCategory('Crime', this)">Crime</button>
-                    <button class="chip" onclick="filterHomeCategory('Sci-Fi', this)">Sci-Fi</button>
-                    <button class="chip" onclick="filterHomeCategory('Mature', this)">🔥 Mature 18+</button>
-                </div>
-
-                <div class="section-title">Explore Stories</div>
-                <div class="story-grid" id="homeStoryGrid"></div>
-            </div>
-
-            <!-- Search Screen -->
-            <div class="app-screen" id="screenSearch">
-                <div class="search-input-box">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    <input type="text" id="searchInput" placeholder="Search characters or topics..." oninput="handleSearchInput(this.value)">
-                </div>
-                <div class="story-grid" id="searchStoryGrid"></div>
-            </div>
-
-            <!-- Chats Screen -->
-            <div class="app-screen" id="screenChats">
-                <div class="section-title">
-                    Active Conversations
-                    <button class="btn-save-all-chats" onclick="showToast('All chats saved locally!')">💾 Save All</button>
-                </div>
-                <div class="chat-inbox-list" id="chatInboxList">
-                    <div style="font-size: 0.8rem; color: var(--text-secondary);">No conversations started yet.</div>
+        <!-- Chat View -->
+        <div id="chat-view" class="hidden flex flex-col h-full">
+            <div class="flex items-center justify-between pb-3 border-b border-gray-800 mb-3">
+                <button onclick="goHome()" class="text-sm text-gray-400 hover:text-white"><i class="fa-solid fa-arrow-left mr-1"></i> Back</button>
+                <span id="chat-title" class="text-sm font-semibold truncate max-w-[180px]">Story Chat</span>
+                <div class="flex space-x-2">
+                    <button onclick="saveLocalChat()" class="text-xs bg-purple-900/60 border border-purple-700 px-2.5 py-1 rounded-lg text-purple-200">Save</button>
+                    <button onclick="undoLast()" class="text-xs bg-gray-800 px-2.5 py-1 rounded-lg text-gray-300">Undo</button>
                 </div>
             </div>
-
-            <!-- Store Screen -->
-            <div class="app-screen" id="screenStore">
-                <div class="section-title">Discovery Hub & Collections</div>
-                <div class="story-grid" id="storeStoryGrid"></div>
+            <div id="chat-messages" class="flex-1 overflow-y-auto space-y-3 pr-1 text-sm pb-4">
+                <!-- Messages populated dynamically -->
             </div>
-
-            <!-- Settings Screen -->
-            <div class="app-screen" id="screenSettingsTab">
-                <div class="section-title">App Preferences</div>
-                <div style="background:var(--card-bg); padding:16px; border-radius:12px; border:1px solid var(--border-color); display:flex; flex-direction:column; gap:12px;">
-                    <div>
-                        <label>Preferred Chat Language:</label>
-                        <select id="settingLangTab" style="padding:8px 12px; border-radius:8px; border:1px solid var(--border-color); background:var(--bg-main); color:white; width:100%; margin-top:4px;">
-                            <option value="Hinglish">Hinglish (Hindi + English)</option>
-                            <option value="English">English</option>
-                            <option value="Hindi">Hindi</option>
-                            <option value="Bengali">Bengali</option>
-                            <option value="Urdu">Urdu</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Theme & Animation:</label>
-                        <button class="btn-pri" style="margin-top:8px; width:100%;" onclick="toggleAnimatedRGB()">Toggle Animated RGB Mode</button>
-                    </div>
-                </div>
+            <div class="pt-2 flex items-center space-x-2 bg-gray-950">
+                <input type="text" id="user-input" placeholder="Type response..." class="flex-1 bg-gray-900 border border-gray-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-purple-500">
+                <button onclick="sendMessage()" class="bg-gradient-to-r from-pink-600 to-purple-600 px-4 py-2.5 rounded-xl text-sm font-semibold"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
+    </main>
 
-        <!-- Active Chat Window -->
-        <div class="chat-window-view" id="chatWindowView">
-            <div class="chat-view-header">
-                <button class="btn-back" onclick="closeChatWindow()">← Back</button>
-                <div class="chat-header-profile" onclick="openStoryInfo()">
-                    <img src="" class="chat-avatar-mini" id="activeChatAvatar">
-                    <div class="chat-header-titles">
-                        <h3 id="activeChatName">Loading...</h3>
-                        <p id="activeChatStatus">Online • Tap to View Brain</p>
-                    </div>
-                </div>
-                <div class="chat-actions">
-                    <button class="chat-btn chat-btn-undo" onclick="undoLastMessage()">Undo</button>
-                    <button class="chat-btn chat-btn-fav" id="chatFavBtn" onclick="toggleCurrentFavorite()">❤️ Fav</button>
-                </div>
-            </div>
-
-            <div class="chat-conversation-area" id="chatConversationArea"></div>
-
-            <div class="chat-input-bar">
-                <input type="text" id="chatMessageInput" placeholder="Type response..." autocomplete="off">
-                <button onclick="sendUserMessage()">Send</button>
-            </div>
-        </div>
-
-        <!-- Bottom Navigation Bar -->
-        <div class="bottom-nav">
-            <div class="nav-item active" onclick="switchTab('Home', this)">
-                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-                <span>Home</span>
-            </div>
-            <div class="nav-item" onclick="switchTab('Search', this)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <span>Search</span>
-            </div>
-            <div class="nav-item" onclick="switchTab('Chats', this)">
-                <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-                <span>Chats</span>
-            </div>
-            <div class="nav-item" onclick="switchTab('Store', this)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-                <span>Store</span>
-            </div>
-            <div class="nav-item" onclick="switchTab('Settings', this)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                <span>Settings</span>
+    <!-- Admin Login Modal -->
+    <div id="admin-modal" class="hidden fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-900 border border-gray-800 w-full max-w-sm rounded-2xl p-5 space-y-4">
+            <h3 class="text-lg font-bold">Admin Login</h3>
+            <input type="text" id="admin-user" placeholder="Username" autocomplete="off" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-purple-500">
+            <input type="password" id="admin-pass" placeholder="Password" autocomplete="new-password" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-purple-500">
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeAdminLogin()" class="px-4 py-2 text-xs text-gray-400">Cancel</button>
+                <button onclick="submitAdminLogin()" class="px-4 py-2 text-xs bg-purple-600 rounded-xl font-semibold">Login</button>
             </div>
         </div>
     </div>
 
-    <!-- Modals (Settings, Admin, Editor) -->
-    <div class="modal" id="settingsModal">
-        <div class="modal-content">
-            <h3>App Settings</h3>
+    <!-- Edit Story / Settings Modal with Pre-Scene Chats -->
+    <div id="settings-modal" class="hidden fixed inset-0 bg-blackv80 bg-black/80 flex items-center justify-center p-4 z-50 overflow-y-auto">
+        <div class="bg-gray-900 border border-gray-800 w-full max-w-md rounded-2xl p-5 space-y-3 my-auto">
+            <h3 class="text-lg font-bold">Edit Story & Pre-Scene Chats</h3>
             <div>
-                <label>1. Preferred Chat Language:</label>
-                <select id="settingLang">
-                    <option value="Hinglish">Hinglish (Hindi + English)</option>
-                    <option value="English">English</option>
-                    <option value="Hindi">Hindi</option>
-                    <option value="Bengali">Bengali</option>
-                    <option value="Urdu">Urdu</option>
-                </select>
+                <label class="text-xs text-gray-400">Story Title</label>
+                <input type="text" id="edit-title" value="Campus Ke Dil Ki Dhadkan" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-sm">
             </div>
             <div>
-                <label>2. RGB Background Color Theme:</label>
-                <div class="theme-preset-grid">
-                    <button class="preset-btn" style="background:#120326;" onclick="setThemeColor('#120326')"></button>
-                    <button class="preset-btn" style="background:#091d36;" onclick="setThemeColor('#091d36')"></button>
-                    <button class="preset-btn" style="background:#2d0b3f;" onclick="setThemeColor('#2d0b3f')"></button>
-                    <button class="preset-btn" style="background:#032b22;" onclick="setThemeColor('#032b22')"></button>
-                </div>
+                <label class="text-xs text-gray-400">Character Traits</label>
+                <input type="text" id="edit-traits" value="Feisty, caring, confident" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-sm">
             </div>
-            <button class="btn-pri" id="rgbToggleBtn" onclick="toggleAnimatedRGB()">Enable Animated RGB Mode</button>
-            <div class="modal-actions">
-                <button class="btn-sec" onclick="closeSettingsModal()">Close</button>
+            <div>
+                <label class="text-xs text-gray-400">Pre-Scene Chats (3-4 Opening Dialogues, separated by line breaks)</label>
+                <textarea id="edit-prescene" rows="4" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-sm" placeholder="Line 1: *Scene setup...*&#10;Line 2: Aisha: Hello..."></textarea>
+            </div>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeSettings()" class="px-4 py-2 text-xs text-gray-400">Cancel</button>
+                <button onclick="saveSettings()" class="px-4 py-2 text-xs bg-purple-600 rounded-xl font-semibold">Save Changes</button>
             </div>
         </div>
     </div>
 
-    <div class="modal" id="adminLoginModal">
-        <div class="modal-content">
-            <h3>Admin Login</h3>
-            <div>
-                <label>Username</label>
-                <input type="text" id="adminUserInput" placeholder="MdYeasinAlam">
-            </div>
-            <div>
-                <label>Password</label>
-                <input type="password" id="adminPassInput" placeholder="Password">
-            </div>
-            <div class="modal-actions">
-                <button class="btn-sec" onclick="closeAdminLogin()">Cancel</button>
-                <button class="btn-pri" onclick="verifyAdminLogin()">Login</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="adminDashboardModal">
-        <div class="modal-content" style="width: 480px;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h3>Catalog Manager</h3>
-                <button class="btn-pri" onclick="openStoryEditorForNew()">+ Publish Story</button>
-            </div>
-            <div id="adminCatalogList" style="max-height: 320px; overflow-y: auto; display:flex; flex-direction:column; gap:8px;"></div>
-            <div class="modal-actions">
-                <button class="btn-sec" onclick="closeAdminDashboard()">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="storyEditorModal">
-        <div class="modal-content">
-            <h3 id="editorModalTitle">Publish New Story</h3>
-            <div>
-                <label>Story Headline / Title:</label>
-                <input type="text" id="editTitle" placeholder="e.g. Campus Ke Dil Ki Dhadkan">
-            </div>
-            <div>
-                <label>Story Category:</label>
-                <select id="editCategory">
-                    <option value="Romance">Romance</option>
-                    <option value="Drama">Drama</option>
-                    <option value="English">English</option>
-                    <option value="Crime">Crime</option>
-                    <option value="Sci-Fi">Sci-Fi</option>
-                    <option value="Mature">Mature</option>
-                </select>
-            </div>
-            <div>
-                <label>✨ Character Traits & Personality Settings:</label>
-                <input type="text" id="editTraits" placeholder="e.g. Mysterious, Intelligent, Guarded">
-            </div>
-            <div>
-                <label>Money Class / Social Status:</label>
-                <input type="text" id="editSocial" placeholder="e.g. Wealthy Billionaire, Student">
-            </div>
-            <div>
-                <label>Age & Role in Story:</label>
-                <input type="text" id="editAgeRole" placeholder="e.g. 20-year-old Student">
-            </div>
-            <div>
-                <label>Thumbnail Photo Selection (URL or File):</label>
-                <input type="file" id="editFileBtn" accept="image/*" onchange="handleImageUpload(event)">
-                <input type="text" id="editImgUrl" placeholder="Or paste image URL here..." style="margin-top:6px;">
-                <img id="previewThumb" class="preview-thumbnail" alt="Preview">
-            </div>
-            <div>
-                <label>Story First Line / Opening Scene Prompt:</label>
-                <textarea id="editPrompt" rows="3" placeholder="Enter starting scene story prompt..."></textarea>
-            </div>
-            <div class="modal-actions">
-                <button class="btn-sec" onclick="closeStoryEditor()">Cancel</button>
-                <button class="btn-pri" id="saveStoryBtn" onclick="saveStoryFromEditor()">Publish Story</button>
-            </div>
-        </div>
-    </div>
+    <!-- Bottom Nav Bar -->
+    <nav class="bg-gray-900 border-t border-gray-800 h-16 flex justify-around items-center absolute bottom-0 w-full z-10">
+        <button onclick="goHome()" class="flex flex-col items-center text-purple-400 text-xs"><i class="fa-solid fa-house text-base"><span>Home</span></i></button>
+    </nav>
 
     <script>
-        const defaultStories = [
-            { id: '1', title: 'Campus Ke Dil Ki Dhadkan', cat: 'Romance', traits: 'Feisty, caring, confident', social: 'College Student', role: '20-year-old Student', img: 'https://image.pollinations.ai/prompt/romantic%20indian%20college%20couple?width=400&height=550&nologo=true', prompt: 'Library mein tumhare aage Alsha khadi hai aur tum se galti se takra gaye ho, jis wajah se uski mehangi kitabein neeche gir gayi.', intro: 'Aisha: "Dikhta nahi hai gwaarakahin ke! Excuse me? Tumhe meri books girayii aur ab mujhe hi dekh rahe ho?"', popular: true, mature: false },
-            { id: '2', title: 'CEO & Assistant: Office Romance', cat: 'Romance', traits: 'Strict, demanding, secretly soft', social: 'Corporate Executive', role: '28-year-old CEO', img: 'https://image.pollinations.ai/prompt/strict%20handsome%20ceo%20woman%20suit?width=400&height=550&nologo=true', prompt: 'Office cabin ke andar late-night project review chal raha hai.', intro: 'Rhea: "Report desk par rakh do. Aur kal subah 9 baje se pehle table par file chahiye."', popular: true, mature: false },
-            { id: '3', title: 'The Billionaire\'s Secret Bride', cat: 'English', traits: 'Mysterious, elegant, proud', social: 'Elite High Society', role: '25-year-old Heiress', img: 'https://image.pollinations.ai/prompt/luxury%20billionaire%20woman%20gala%20dress?width=400&height=550&nologo=true', prompt: 'A high-profile masquerade gala event in London.', intro: 'Elena: "You shouldn\'t have followed me out here. The contract is already signed."', popular: true, mature: false },
-            { id: '4', title: 'Priya: Bad Husband', cat: 'Mature', traits: 'Aggressive, dominant, intense', social: 'Upper Class', role: '27-year-old Wife', img: 'https://image.pollinations.ai/prompt/dramatic%20mature%20woman%20red%20dress?width=400&height=550&nologo=true', prompt: 'Living room mein tense atmosphere hai jab door lock hojata hai.', intro: 'Priya: "Tumhe lagta hai tum mujhe control kar loge? Think again."', popular: false, mature: true },
-            { id: '5', title: 'Mafia Boss: Duniya Ka Don', cat: 'Crime', traits: 'Ruthless, calculative, protective', social: 'Underworld Kingpin', role: '32-year-old Don', img: 'https://image.pollinations.ai/prompt/dark%20mafia%20boss%20cinematic%20portrait?width=400&height=550&nologo=true', prompt: 'Warehouse meeting ke baad andhere mein.', intro: 'Vikram: "Galti ki gunjaish yahan nahi milti. Tell me who sent you."', popular: true, mature: false }
-        ];
-
-        function generateFullCatalog() {
-            let stories = JSON.parse(localStorage.getItem('roleplay_admin_stories')) || defaultStories;
-            const extraCategories = ['Romance', 'Drama', 'English', 'Crime', 'Sci-Fi', 'Mature'];
-            const extraAdjectives = ['Velvet', 'Midnight', 'Shadow', 'Obsessive', 'Crimson', 'Silent', 'Secret', 'Intimate', 'Forbidden', 'Lethal', 'Seductive'];
-            const extraNouns = ['Emperor', 'Heartbreak', 'Lover', 'Temptation', 'Empire'];
-            
-            while(stories.length < 30) {
-                let id = (stories.length + 1).toString();
-                let adj = extraAdjectives[stories.length % extraAdjectives.length];
-                let noun = extraNouns[stories.length % extraNouns.length];
-                let cat = extraCategories[stories.length % extraCategories.length];
-                stories.push({
-                    id: id,
-                    title: `${adj} ${noun} #${id}`,
-                    cat: cat,
-                    traits: 'Mysterious, Intelligent, Observant, Guarded',
-                    social: 'Elite Class',
-                    role: '24-year-old Protagonist',
-                    img: `https://image.pollinations.ai/prompt/${encodeURIComponent(adj.toLowerCase()+' '+noun.toLowerCase()+' cinematic portrait')}?width=400&height=550&nologo=true`,
-                    prompt: 'A dramatic starting confrontation scene.',
-                    intro: `${adj}: "You stepped into my world willingly. Now deal with the consequences."`,
-                    popular: stories.length % 2 === 0,
-                    mature: cat === 'Mature'
-                });
-            }
-            return stories;
-        }
-
-        let storiesDatabase = generateFullCatalog();
-        let activeTab = 'Home';
-        let currentChatStoryId = null;
-        let chatsData = JSON.parse(localStorage.getItem('roleplay_chats_data')) || {};
-        let editingStoryId = null;
-
-        window.onload = function() {
-            renderHomeGrid();
-            renderHeroBanner();
-            renderContinueScroll();
-            renderStoreGrid();
+        let currentHistory = [];
+        let storyConfig = {
+            title: "Campus Ke Dil Ki Dhadkan",
+            traits: "Feisty, caring, confident",
+            preScene: [
+                "*Che mahine beet gaye, Aisha... tum sach mein aa gaye!*",
+                "Aisha: \"Main bhi mujhe kal dusri jagah jaana lekin main proof kr ke rahunga.\""
+            ]
         };
 
-        function switchTab(tabName, el) {
-            activeTab = tabName;
-            document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.bottom-nav .nav-item').forEach(n => n.classList.remove('active'));
+        function openAdminLogin() { document.getElementById('admin-modal').classList.remove('hidden'); }
+        function closeAdminLogin() { document.getElementById('admin-modal').classList.add('hidden'); }
+        function openSettings() { document.getElementById('settings-modal').classList.remove('hidden'); }
+        function closeSettings() { document.getElementById('settings-modal').classList.add('hidden'); }
+
+        function submitAdminLogin() {
+            const user = document.getElementById('admin-user').value;
+            const pass = document.getElementById('admin-pass').value;
+            if(user && pass) {
+                alert("Admin logged in successfully!");
+                closeAdminLogin();
+            } else {
+                alert("Please fill in fields.");
+            }
+        }
+
+        function saveSettings() {
+            storyConfig.title = document.getElementById('edit-title').value;
+            storyConfig.traits = document.getElementById('edit-traits').value;
+            const rawPre = document.getElementById('edit-prescene').value;
+            if(rawPre.trim()) {
+                storyConfig.preScene = rawPre.split('\n').filter(Boolean);
+            }
+            alert("Story settings updated!");
+            closeSettings();
+        }
+
+        function goHome() {
+            document.getElementById('home-view').classList.remove('hidden');
+            document.getElementById('chat-view').classList.add('hidden');
+        }
+
+        function startStory(id) {
+            document.getElementById('home-view').classList.add('hidden');
+            document.getElementById('chat-view').classList.remove('hidden');
+            document.getElementById('chat-title').innerText = storyConfig.title;
             
-            if(tabName === 'Home') {
-                document.getElementById('screenHome').classList.add('active');
-                renderHomeGrid();
-                renderContinueScroll();
-            } else if(tabName === 'Search') {
-                document.getElementById('screenSearch').classList.add('active');
-                renderSearchGrid('');
-            } else if(tabName === 'Chats') {
-                document.getElementById('screenChats').classList.add('active');
-                renderChatsInbox();
-            } else if(tabName === 'Store') {
-                document.getElementById('screenStore').classList.add('active');
-                renderStoreGrid();
-            } else if(tabName === 'Settings') {
-                document.getElementById('screenSettingsTab').classList.add('active');
-            }
-            if(el) el.classList.add('active');
-        }
+            const container = document.getElementById('chat-messages');
+            container.innerHTML = '';
+            currentHistory = [];
 
-        function renderHeroBanner() {
-            const featured = storiesDatabase[0];
-            if(!featured) return;
-            document.getElementById('heroImg').src = featured.img;
-            document.getElementById('heroTitle').textContent = featured.title;
-            document.getElementById('heroMeta').textContent = `${featured.cat} •${featured.popular ? 'POPULAR' : ''}`;
-        }
-
-        function renderHomeGrid(filterCat = 'All') {
-            const grid = document.getElementById('homeStoryGrid');
-            grid.innerHTML = '';
-            let filtered = storiesDatabase;
-            if(filterCat === 'Favorites') {
-                let favs = JSON.parse(localStorage.getItem('roleplay_favs')) || [];
-                filtered = storiesDatabase.filter(s => favs.includes(s.id));
-            } else if(filterCat === 'Mature') {
-                filtered = storiesDatabase.filter(s => s.mature);
-            } else if(filterCat !== 'All') {
-                filtered = storiesDatabase.filter(s => s.cat === filterCat);
-            }
-
-            filtered.forEach(story => {
-                grid.appendChild(createStoryCard(story));
+            // Load pre-scene chats defined by admin
+            storyConfig.preScene.forEach(text => {
+                currentHistory.push({ sender: 'assistant', text });
+                appendMessageBubble('assistant', text);
             });
         }
 
-        function renderStoreGrid() {
-            const grid = document.getElementById('storeStoryGrid');
-            if(!grid) return;
-            grid.innerHTML = '';
-            storiesDatabase.slice(0, 12).forEach(story => {
-                grid.appendChild(createStoryCard(story));
-            });
-        }
-
-        function createStoryCard(story) {
-            const card = document.createElement('div');
-            card.className = 'grid-card';
-            card.onclick = () => selectStory(story.id);
+        function appendMessageBubble(sender, text) {
+            const container = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            div.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'} mb-2`;
             
-            let badges = '';
-            if(story.popular) badges += `<span class="badge-mini badge-pop">POPULAR</span>`;
-            if(story.mature) badges += `<span class="badge-mini badge-18">18+</span>`;
-
-            card.innerHTML = `
-                <div class="grid-poster-wrap">
-                    <img src="${story.img}" alt="${story.title}" onerror="this.src='https://image.pollinations.ai/prompt/cinematic%20portrait?width=400&height=550&nologo=true'">
-                </div>
-                <div class="grid-info">
-                    <h4>${story.title}</h4>
-                    <div class="grid-meta">${story.cat}${badges}</div>
-                </div>
-            `;
-            return card;
-        }
-
-        function filterHomeCategory(cat, el) {
-            document.querySelectorAll('.category-scroll .chip').forEach(c => c.classList.remove('active'));
-            if(el) el.classList.add('active');
-            renderHomeGrid(cat);
-        }
-
-        function renderContinueScroll() {
-            const scroll = document.getElementById('continueChatScroll');
-            scroll.innerHTML = '';
-            const activeIds = Object.keys(chatsData);
-            if(activeIds.length === 0) {
-                scroll.innerHTML = `<div style="font-size: 0.8rem; color: var(--text-secondary);">No active chats yet. Pick a story below to start!</div>`;
-                return;
-            }
-            activeIds.forEach(id => {
-                const story = storiesDatabase.find(s => s.id === id);
-                if(!story) return;
-                const item = document.createElement('div');
-                item.className = 'continue-item';
-                item.onclick = () => selectStory(id);
-                item.innerHTML = `
-                    <img src="${story.img}" class="continue-avatar">
-                    <span>${story.title}</span>
-                `;
-                scroll.appendChild(item);
-            });
-        }
-
-        function handleSearchInput(query) {
-            const grid = document.getElementById('searchStoryGrid');
-            grid.innerHTML = '';
-            const q = query.toLowerCase();
-            const results = storiesDatabase.filter(s => s.title.toLowerCase().includes(q) || s.cat.toLowerCase().includes(q) || s.traits.toLowerCase().includes(q));
-            results.forEach(story => {
-                grid.appendChild(createStoryCard(story));
-            });
-        }
-
-        function renderSearchGrid() {
-            handleSearchInput(document.getElementById('searchInput').value);
-        }
-
-        function renderChatsInbox() {
-            const list = document.getElementById('chatInboxList');
-            list.innerHTML = '';
-            const activeIds = Object.keys(chatsData);
-            if(activeIds.length === 0) {
-                list.innerHTML = `<div style="font-size: 0.8rem; color: var(--text-secondary);">No conversations started yet.</div>`;
-                return;
-            }
-            activeIds.forEach(id => {
-                const story = storiesDatabase.find(s => s.id === id);
-                if(!story) return;
-                const msgs = chatsData[id];
-                const lastMsg = msgs.length > 0 ? msgs[msgs.length - 1].text : story.intro;
-                
-                const item = document.createElement('div');
-                item.className = 'inbox-item';
-                item.onclick = () => selectStory(id);
-                item.innerHTML = `
-                    <img src="${story.img}" class="inbox-avatar">
-                    <div class="inbox-details">
-                        <h4>${story.title}</h4>
-                        <p>${lastMsg}</p>
-                    </div>
-                `;
-                list.appendChild(item);
-            });
-        }
-
-        function selectStory(storyId) {
-            currentChatStoryId = storyId;
-            const story = storiesDatabase.find(s => s.id === storyId);
-            if(!story) return;
-
-            document.getElementById('activeChatAvatar').src = story.img;
-            document.getElementById('activeChatName').textContent = story.title;
+            const bubble = document.createElement('div');
+            bubble.className = `max-w-[85%] px-4 py-2.5 rounded-2xl text-sm ${sender === 'user' ? 'bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-br-none' : 'bg-gray-900 border border-gray-800 text-gray-200 rounded-bl-none'}`;
+            bubble.innerText = text;
             
-            if(!chatsData[storyId]) {
-                chatsData[storyId] = [
-                    { sender: 'ai', text: story.intro }
-                ];
-                saveChatsStorage();
-            }
-
-            renderActiveConversation();
-            updateFavoriteButtonState();
-            document.getElementById('chatWindowView').classList.add('active');
+            div.appendChild(bubble);
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
         }
 
-        function closeChatWindow() {
-            document.getElementById('chatWindowView').classList.remove('active');
-            renderContinueScroll();
-            renderChatsInbox();
-        }
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const message = input.value.trim();
+            if(!message) return;
 
-        function renderActiveConversation() {
-            const area = document.getElementById('chatConversationArea');
-            area.innerHTML = '';
-            const msgs = chatsData[currentChatStoryId] || [];
-            msgs.forEach(m => {
-                const msgDiv = document.createElement('div');
-                msgDiv.className = `chat-msg ${m.sender}`;
-                msgDiv.textContent = m.text;
-                area.appendChild(msgDiv);
-            });
-            area.scrollTop = area.scrollHeight;
-        }
-
-        document.getElementById('chatMessageInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                sendUserMessage();
-            }
-        });
-
-        async function sendUserMessage() {
-            const input = document.getElementById('chatMessageInput');
-            const txt = input.value.trim();
-            if(!txt || !currentChatStoryId) return;
-
-            chatsData[currentChatStoryId].push({ sender: 'user', text: txt });
+            appendMessageBubble('user', message);
+            currentHistory.push({ sender: 'user', text: message });
             input.value = '';
-            renderActiveConversation();
 
-            const story = storiesDatabase.find(s => s.id === currentChatStoryId);
-            const preferredLang = document.getElementById('settingLangTab') ? document.getElementById('settingLangTab').value : 'Auto';
-
+            // Query backend server API route
             try {
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        sessionId: 'user-phone-session',
-                        storyId: currentChatStoryId,
-                        message: txt,
-                        history: chatsData[currentChatStoryId],
-                        storyDetails: story,
-                        languagePref: preferredLang
+                        storyId: 'default',
+                        message: message,
+                        history: currentHistory,
+                        storyDetails: { name: "Aisha", traits: storyConfig.traits.split(',') }
                     })
                 });
-
                 const data = await response.json();
                 if(data.reply) {
-                    chatsData[currentChatStoryId].push({ sender: 'ai', text: data.reply });
-                } else {
-                    chatsData[currentChatStoryId].push({ sender: 'ai', text: "*Observes you quietly.*" });
-                }
-            } catch (error) {
-                console.error('Backend connection error:', error);
-                chatsData[currentChatStoryId].push({ sender: 'ai', text: "*Pauses cautiously.* (Backend server unreachable. Make sure 'npm start' is running)" });
-            }
-
-            saveChatsStorage();
-            renderActiveConversation();
-        }
-
-        function undoLastMessage() {
-            if(!currentChatStoryId || !chatsData[currentChatStoryId]) return;
-            let msgs = chatsData[currentChatStoryId];
-            if(msgs.length > 2) {
-                msgs.pop();
-                msgs.pop();
-                saveChatsStorage();
-                renderActiveConversation();
-            }
-        }
-
-        function toggleCurrentFavorite() {
-            if(!currentChatStoryId) return;
-            let favs = JSON.parse(localStorage.getItem('roleplay_favs')) || [];
-            const idx = favs.indexOf(currentChatStoryId);
-            if(idx > -1) {
-                favs.splice(idx, 1);
-                showToast('Removed from favorites');
-            } else {
-                favs.push(currentChatStoryId);
-                showToast('Added to favorites ❤️');
-            }
-            localStorage.setItem('roleplay_favs', JSON.stringify(favs));
-            updateFavoriteButtonState();
-        }
-
-        function updateFavoriteButtonState() {
-            let favs = JSON.parse(localStorage.getItem('roleplay_favs')) || [];
-            const btn = document.getElementById('chatFavBtn');
-            if(favs.includes(currentChatStoryId)) {
-                btn.style.opacity = '1';
-                btn.textContent = '❤️ Saved';
-            } else {
-                btn.style.opacity = '0.7';
-                btn.textContent = '❤️ Fav';
-            }
-        }
-
-        function saveChatsStorage() {
-            localStorage.setItem('roleplay_chats_data', JSON.stringify(chatsData));
-        }
-
-        function openStoryInfo() {
-            const story = storiesDatabase.find(s => s.id === currentChatStoryId);
-            if(story) {
-                alert(`Story: ${story.title}\nCategory:${story.cat}\nTraits & Brain: ${story.traits}\nScenario:${story.prompt}`);
-            }
-        }
-
-        function openSettingsModal() { document.getElementById('settingsModal').style.display = 'flex'; }
-        function closeSettingsModal() { document.getElementById('settingsModal').style.display = 'none'; }
-
-        function setThemeColor(colorHex) {
-            document.body.style.backgroundColor = colorHex;
-            document.body.classList.remove('rgb-animated-bg');
-            showToast('Background Color Updated!');
-        }
-
-        function toggleAnimatedRGB() {
-            document.body.classList.toggle('rgb-animated-bg');
-            const active = document.body.classList.contains('rgb-animated-bg');
-            showToast(active ? 'Animated RGB Mode Enabled!' : 'RGB Mode Disabled');
-        }
-
-        function openAdminLogin() { document.getElementById('adminLoginModal').style.display = 'flex'; }
-        function closeAdminLogin() { document.getElementById('adminLoginModal').style.display = 'none'; }
-
-        async function verifyAdminLogin() {
-            const u = document.getElementById('adminUserInput').value.trim();
-            const p = document.getElementById('adminPassInput').value.trim();
-            
-            try {
-                const res = await fetch('/api/admin/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username: u, password: p })
-                });
-                const data = await res.json();
-                if(data.success) {
-                    closeAdminLogin();
-                    openAdminDashboard();
-                } else {
-                    alert('Invalid Username or Password.');
+                    appendMessageBubble('assistant', data.reply);
+                    currentHistory.push({ sender: 'assistant', text: data.reply });
                 }
             } catch(e) {
-                // Fallback client validation matching your credentials
-                if(u === 'MdYeasinAlam' && p === '25801@Yeasin') {
-                    closeAdminLogin();
-                    openAdminDashboard();
-                } else {
-                    alert('Invalid Username or Password.');
-                }
+                console.error(e);
+                appendMessageBubble('assistant', "*Aisha looks away quietly.* (Network error)");
             }
         }
 
-        function openAdminDashboard() {
-            document.getElementById('adminDashboardModal').style.display = 'flex';
-            renderAdminCatalogList();
-        }
-        function closeAdminDashboard() { document.getElementById('adminDashboardModal').style.display = 'none'; }
-
-        function renderAdminCatalogList() {
-            const list = document.getElementById('adminCatalogList');
-            list.innerHTML = '';
-            storiesDatabase.forEach(story => {
-                const div = document.createElement('div');
-                div.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:var(--card-bg); padding:10px; border-radius:8px; border:1px solid var(--border-color);";
-                div.innerHTML = `
-                    <div>
-                        <h4 style="font-size:0.85rem;">${story.title}</h4>
-                        <p style="font-size:0.7rem; color:var(--text-secondary);">${story.cat} • Active Brain</p>
-                    </div>
-                    <div style="display:flex; gap:6px;">
-                        <button class="btn-pri" style="padding:4px 10px; font-size:0.7rem;" onclick="openStoryEditorForEdit('${story.id}')">Edit</button>
-                        <button class="btn-danger" style="padding:4px 10px; font-size:0.7rem;" onclick="deleteStoryFromAdmin('${story.id}')">Remove</button>
-                    </div>
-                `;
-                list.appendChild(div);
-            });
+        function saveLocalChat() {
+            localStorage.setItem('daryeam_saved_chat', JSON.stringify(currentHistory));
+            alert("Chat saved locally to your browser device! It will clear when you clear browser cache.");
         }
 
-        function openStoryEditorForNew() {
-            editingStoryId = null;
-            document.getElementById('editorModalTitle').textContent = 'Publish New Story';
-            document.getElementById('editTitle').value = '';
-            document.getElementById('editCategory').value = 'Romance';
-            document.getElementById('editTraits').value = '';
-            document.getElementById('editSocial').value = '';
-            document.getElementById('editAgeRole').value = '';
-            document.getElementById('editImgUrl').value = '';
-            document.getElementById('editPrompt').value = '';
-            document.getElementById('previewThumb').style.display = 'none';
-            document.getElementById('storyEditorModal').style.display = 'flex';
-        }
-
-        function openStoryEditorForEdit(id) {
-            editingStoryId = id;
-            const story = storiesDatabase.find(s => s.id === id);
-            if(!story) return;
-            document.getElementById('editorModalTitle').textContent = 'Edit Story: ' + story.title;
-            document.getElementById('editTitle').value = story.title;
-            document.getElementById('editCategory').value = story.cat;
-            document.getElementById('editTraits').value = story.traits;
-            document.getElementById('editSocial').value = story.social;
-            document.getElementById('editAgeRole').value = story.role;
-            document.getElementById('editImgUrl').value = story.img;
-            document.getElementById('editPrompt').value = story.prompt;
-            document.getElementById('previewThumb').src = story.img;
-            document.getElementById('previewThumb').style.display = 'block';
-            document.getElementById('storyEditorModal').style.display = 'flex';
-        }
-
-        function closeStoryEditor() { document.getElementById('storyEditorModal').style.display = 'none'; }
-
-        function handleImageUpload(e) {
-            const file = e.target.files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    document.getElementById('editImgUrl').value = event.target.result;
-                    const prev = document.getElementById('previewThumb');
-                    prev.src = event.target.result;
-                    prev.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
+        function undoLast() {
+            if(currentHistory.length > 0) {
+                currentHistory.pop();
+                const container = document.getElementById('chat-messages');
+                if(container.lastChild) container.removeChild(container.lastChild);
             }
-        }
-
-        function saveStoryFromEditor() {
-            const title = document.getElementById('editTitle').value.trim();
-            const cat = document.getElementById('editCategory').value;
-            const traits = document.getElementById('editTraits').value.trim();
-            const social = document.getElementById('editSocial').value.trim();
-            const role = document.getElementById('editAgeRole').value.trim();
-            const img = document.getElementById('editImgUrl').value.trim() || 'https://image.pollinations.ai/prompt/cinematic%20portrait?width=400&height=550&nologo=true';
-            const prompt = document.getElementById('editPrompt').value.trim();
-
-            if(!title) { alert('Please enter story headline'); return; }
-
-            if(editingStoryId) {
-                let story = storiesDatabase.find(s => s.id === editingStoryId);
-                if(story) {
-                    story.title = title;
-                    story.cat = cat;
-                    story.traits = traits;
-                    story.social = social;
-                    story.role = role;
-                    story.img = img;
-                    story.prompt = prompt;
-                }
-            } else {
-                let newId = (storiesDatabase.length + 10).toString();
-                storiesDatabase.unshift({
-                    id: newId,
-                    title: title,
-                    cat: cat,
-                    traits: traits || 'Mysterious, Intelligent, Observant',
-                    social: social || 'Elite',
-                    role: role || 'Protagonist',
-                    img: img,
-                    prompt: prompt,
-                    intro: `${title}: "Let's begin our journey together."`,
-                    popular: true,
-                    mature: cat === 'Mature'
-                });
-            }
-
-            localStorage.setItem('roleplay_admin_stories', JSON.stringify(storiesDatabase));
-            closeStoryEditor();
-            renderAdminCatalogList();
-            renderHomeGrid();
-            showToast('Story successfully published!');
-        }
-
-        function deleteStoryFromAdmin(id) {
-            if(confirm('Are you sure you want to remove this story?')) {
-                storiesDatabase = storiesDatabase.filter(s => s.id !== id);
-                localStorage.setItem('roleplay_admin_stories', JSON.stringify(storiesDatabase));
-                renderAdminCatalogList();
-                renderHomeGrid();
-                showToast('Story removed successfully');
-            }
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById('toastBox');
-            toast.textContent = msg;
-            toast.style.display = 'block';
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 2500);
         }
     </script>
 </body>
