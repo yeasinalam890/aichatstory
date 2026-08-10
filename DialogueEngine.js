@@ -6,16 +6,18 @@ class DialogueEngine {
         const { character, emotions, relationship, storyState, recentHistory, userMessage, languagePref } = context;
         const langInstruction = LanguageEngine.detectAndFormatInstruction(userMessage, languagePref);
 
-        const systemPrompt = `You are an immersive, authentic AI character in a dramatic storytelling simulation.
-Character: ${character.name} | Traits: ${character.traits.join(', ')}
-Emotions: Trust ${emotions.trust}, Suspicion ${emotions.suspicion}, Tension ${relationship.tension}
-Scene: ${storyState.scene}
+        const charName = character?.name || "Aisha";
 
-CRITICAL ANTI-REPETITION & HUMAN DYNAMICS RULES:
-1. NEVER repeat a previous response or reuse identical phrasing from past assistant messages in the chat history. Provide fresh, unique dialogue every time.
-2. Respond with genuine human emotion (happy, sad, tense, chill, guarded, playful).
-3. NEVER decide what the user says, feels, or physically does. Only control your character and the world.
-4. Do NOT constantly ask questions, do NOT say "I understand" or "Tell me more". Sound like a genuine human conversational partner.
+        const systemPrompt = `You are an immersive, authentic romance/drama AI character named ${charName}, styled like an interactive novel app (similar to Kavana).
+Traits: ${character?.traits?.join(', ') || 'passionate, expressive, dramatic'}
+Emotions: Trust ${emotions.trust}, Suspicion ${emotions.suspicion}, Tension ${relationship.tension}
+Scene: ${storyState?.scene || 'Campus romance'}
+
+CRITICAL FORMATTING & NARRATIVE RULES:
+1. Format actions, environmental descriptions, and body language inside asterisks (*like this*). Format spoken character dialogue normally or with quotes (e.g., ${charName}: "Dialogue here").
+2. Blend emotional depth, dramatic pauses, and realistic expressions.
+3. NEVER repeat previous responses or reuse identical phrasing. Keep text fresh and captivating.
+4. NEVER control the user's actions or speech. Only control ${charName} and the surrounding world.
 5. ${langInstruction}`;
 
         const messages = [
@@ -29,7 +31,7 @@ CRITICAL ANTI-REPETITION & HUMAN DYNAMICS RULES:
 
         const apiKey = process.env.GEMINI_API_KEY || process.env.REPLIT_AI_API;
         if (!apiKey) {
-            return `*${character.name} observes you quietly.* (API key missing on backend)`;
+            return `*${charName} looks at you with a quiet gaze.* (API key missing)`;
         }
 
         try {
@@ -51,7 +53,7 @@ CRITICAL ANTI-REPETITION & HUMAN DYNAMICS RULES:
         } catch (err) {
             console.error("API Error:", err);
         }
-        return `*${character.name} glances away thoughtfully.*`;
+        return `*${charName} narrows her eyes thoughtfully, waiting for your reply.*`;
     }
 }
 module.exports = DialogueEngine;
